@@ -11,12 +11,12 @@ export class Company {
   @Column({ unique: true })
   name: string
 
-  @Column()
+  @Column({ unique: true })
   email: string
 
-  @Column()
+  @Column({ unique: true })
   phone: string
 
-  @Column()
+  @Column({ unique: true })
   address: string
 }
