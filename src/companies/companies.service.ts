@@ -10,7 +10,7 @@ export class CompaniesService {
 
   async get(id: number): Promise<Company> {
     try {
-      return await this.repo.findOneOrFail({ where: { id } })
+      return await this.repo.findOneByOrFail({ id })
     } catch {
       throw new NotFoundException(`Company with id: '${id}' not found`)
     }

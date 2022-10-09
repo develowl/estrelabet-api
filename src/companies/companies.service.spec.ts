@@ -9,7 +9,7 @@ describe('CompaniesService', () => {
 
   const mockRepository = {
     find: jest.fn(),
-    findOneOrFail: jest.fn(),
+    findOneByOrFail: jest.fn(),
     create: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
@@ -50,17 +50,17 @@ describe('CompaniesService', () => {
     })
   })
 
-  describe('findOneOrFail', () => {
+  describe('findOneByOrFail', () => {
     it('should return a valid company', async () => {
-      jest.spyOn(mockRepository, 'findOneOrFail').mockReturnValueOnce(mockCompany)
+      jest.spyOn(mockRepository, 'findOneByOrFail').mockReturnValueOnce(mockCompany)
 
       expect(await companiesService.get(mockCompany.id)).toBe(mockCompany)
-      expect(mockRepository.findOneOrFail).toHaveBeenCalledTimes(1)
+      expect(mockRepository.findOneByOrFail).toHaveBeenCalledTimes(1)
     })
 
     it('should throw an error when not found a valid company', async () => {
       jest
-        .spyOn(mockRepository, 'findOneOrFail')
+        .spyOn(mockRepository, 'findOneByOrFail')
         .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
 
       await expect(companiesService.get(mockCompany.id)).rejects.toThrow(NotFoundException)
