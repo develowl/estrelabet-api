@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { CompaniesService } from './companies.service'
@@ -42,11 +43,27 @@ describe('CompaniesService', () => {
 
   describe('find', () => {
     it('should return an array of companies', async () => {
-      const result = [mockCompany]
-      jest.spyOn(mockRepository, 'find').mockReturnValueOnce(result)
+      jest.spyOn(mockRepository, 'find').mockReturnValueOnce([mockCompany])
 
       expect(await companiesService.find()).toHaveLength(1)
       expect(mockRepository.find).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('findOneOrFail', () => {
+    it('should return a valid company', async () => {
+      jest.spyOn(mockRepository, 'findOneOrFail').mockReturnValueOnce(mockCompany)
+
+      expect(await companiesService.get(mockCompany.id)).toBe(mockCompany)
+      expect(mockRepository.findOneOrFail).toHaveBeenCalledTimes(1)
+    })
+
+    it('should throw an error when not found a valid company', async () => {
+      jest
+        .spyOn(mockRepository, 'findOneOrFail')
+        .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
+
+      await expect(companiesService.get(mockCompany.id)).rejects.toThrow(NotFoundException)
     })
   })
 })
