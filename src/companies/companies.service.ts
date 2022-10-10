@@ -1,7 +1,5 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Injectable } from '@nestjs/common/decorators'
-import { Inject } from '@nestjs/common/decorators/core/inject.decorator'
-import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { fetchAddress } from '../helpers'
@@ -11,10 +9,7 @@ import { Company } from './entities/company.entity'
 
 @Injectable()
 export class CompaniesService {
-  constructor(
-    @InjectRepository(Company) private readonly repo: Repository<Company>,
-    @Inject(ConfigService) private readonly configService: ConfigService
-  ) {}
+  constructor(@InjectRepository(Company) private readonly repo: Repository<Company>) {}
 
   async get(id: number): Promise<Company> {
     try {
