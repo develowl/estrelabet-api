@@ -55,4 +55,13 @@ describe('UsersService', () => {
       await expect(usersService.get(mockUser.id)).rejects.toThrow(NotFoundException)
     })
   })
+
+  describe('find', () => {
+    it('should return an array of users', async () => {
+      jest.spyOn(mockRepository, 'find').mockResolvedValueOnce([mockUser])
+
+      expect(await usersService.find()).toHaveLength(1)
+      expect(mockRepository.find).toHaveBeenCalledTimes(1)
+    })
+  })
 })
