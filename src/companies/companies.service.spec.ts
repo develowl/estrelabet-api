@@ -140,5 +140,15 @@ describe('CompaniesService', () => {
         BadRequestException
       )
     })
+
+    it('should throws an exception when updating not found a valid company', async () => {
+      jest
+        .spyOn(companiesService, 'get')
+        .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
+
+      await expect(companiesService.update(mockCompany.id, mockUpdateCompanyDto())).rejects.toThrow(
+        NotFoundException
+      )
+    })
   })
 })
