@@ -131,4 +131,15 @@ describe('CompaniesService', () => {
     expect(mockRepository.save).toHaveBeenCalledTimes(1)
     expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto(false))
   })
+
+  it('should throws an exception when updating goes wrong', async () => {
+    const spyUpdate = jest
+      .spyOn(companiesService, 'update')
+      .mockRejectedValueOnce(new BadRequestException())
+
+    await expect(companiesService.update(mockCompany.id, mockUpdateCompanyDto())).rejects.toThrow(
+      BadRequestException
+    )
+    expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto())
+  })
 })
