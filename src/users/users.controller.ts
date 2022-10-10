@@ -10,4 +10,9 @@ export class UsersController {
   async get(@Param('id') id: number): Promise<User> {
     return await this.service.get(id)
   }
+
+  @Get()
+  async find(): Promise<User[]> {
+    return await this.service.find()
+  }
 }
