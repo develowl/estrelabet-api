@@ -31,9 +31,12 @@ describe('UsersService', () => {
 
     usersService = module.get<UsersService>(UsersService)
     mockRepository = module.get<Repository<User>>(getRepositoryToken(User))
+
+    mockFetch.enableMocks()
   })
 
   afterEach(() => {
+    mockFetch.resetMocks()
     mockFetch.mockClear()
     jest.clearAllMocks()
   })

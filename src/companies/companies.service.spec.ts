@@ -7,8 +7,6 @@ import { mockCompany, mockCreateCompanyDto, mockUpdateCompanyDto } from '../util
 import { CompaniesService } from './companies.service'
 import { Company } from './entities/company.entity'
 
-mockFetch.enableMocks()
-
 describe('CompaniesService', () => {
   let companiesService: CompaniesService
   let mockRepository: Repository<Company>
@@ -26,10 +24,13 @@ describe('CompaniesService', () => {
 
     companiesService = module.get<CompaniesService>(CompaniesService)
     mockRepository = module.get<Repository<Company>>(getRepositoryToken(Company))
+
+    mockFetch.enableMocks()
   })
 
   afterEach(() => {
     mockFetch.mockClear()
+    mockFetch.resetMocks()
     jest.clearAllMocks()
   })
 
