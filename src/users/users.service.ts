@@ -66,4 +66,17 @@ export class UsersService {
       throw new BadRequestException('Unable to update')
     }
   }
+
+  async delete(id: number): Promise<User> {
+    try {
+      const foundUser = await this.get(id)
+      return await this.repo.remove(foundUser)
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+
+      throw new BadRequestException('Unable to delete')
+    }
+  }
 }
