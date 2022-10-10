@@ -12,13 +12,7 @@ import { UsersService } from './users.service'
 describe('UsersService', () => {
   let usersService: UsersService
   let mockRepository: Repository<User>
-  const companiesService = {
-    get: jest.fn(),
-    find: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn()
-  }
+  const companiesService = { get: jest.fn() }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
