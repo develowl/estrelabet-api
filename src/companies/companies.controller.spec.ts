@@ -42,4 +42,11 @@ describe('CompaniesController', () => {
       expect(spyGet).toHaveBeenCalledWith(mockCompany.id)
     })
   })
+
+  describe('list', () => {
+    it('should return an array of valid companies', async () => {
+      jest.spyOn(companiesService, 'find').mockResolvedValueOnce([mockCompany])
+      expect(await companiesController.find()).toStrictEqual([mockCompany])
+    })
+  })
 })
