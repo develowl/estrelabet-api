@@ -82,4 +82,14 @@ describe('UsersController', () => {
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto())
     })
   })
+
+  describe('delete', () => {
+    it('should delete and return deleted user', async () => {
+      const spyDelete = jest.spyOn(usersController, 'delete')
+      jest.spyOn(usersService, 'delete').mockResolvedValueOnce(mockUser)
+
+      expect(await usersController.delete(mockUser.id)).toStrictEqual(mockUser)
+      expect(spyDelete).toHaveBeenCalledWith(mockUser.id)
+    })
+  })
 })
