@@ -50,8 +50,23 @@ export class CompaniesService {
 
       return await this.repo.save(foundCompany)
     } catch (error) {
-      throw error
-      // throw new BadRequestException('Unable to update')
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+      throw new BadRequestException('Unable to update')
+    }
+  }
+
+  async delete(id: number): Promise<Company> {
+    try {
+      const foundCompany = await this.get(id)
+      return await this.repo.remove(foundCompany)
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+
+      throw new BadRequestException('Unable to delete')
     }
   }
 }
