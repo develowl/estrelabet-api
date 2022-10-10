@@ -13,11 +13,11 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsEmail()
-  email: 'user@company.com'
+  email: string
 
   @IsNotEmpty()
   @IsPhoneNumber('BR')
-  phone: '5198478874'
+  phone: string
 
   @IsNotEmpty()
   address: AddressDto
