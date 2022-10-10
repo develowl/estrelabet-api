@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { sanitizeCnpj } from '../../helpers'
+import { User } from '../../users/entities/user.entity'
 
 @Entity()
 export class Company {
@@ -27,4 +28,7 @@ export class Company {
 
   @Column({ unique: true })
   address: string
+
+  @OneToMany(() => User, (user) => user.company, { eager: true })
+  users: User[]
 }
