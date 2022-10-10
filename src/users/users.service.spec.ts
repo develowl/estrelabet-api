@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import mockFetch from 'jest-fetch-mock'
 import { Repository } from 'typeorm'
 import { CompaniesService } from '../companies/companies.service'
-import { mockCreateUserDto, mockUser } from '../utils/mock/users'
+import { mockCreateUserDto, mockUpdateUserDto, mockUser } from '../utils/mock/users'
 import { User } from './entities/user.entity'
 import { UsersService } from './users.service'
 
@@ -108,6 +108,27 @@ describe('UsersService', () => {
         )
 
       await expect(usersService.create(mockCreateUserDto)).rejects.toThrow(BadRequestException)
+    })
+  })
+
+  describe('update', () => {
+    it('should return a company with updated data - without address and idCompany', async () => {
+      const mockMergedUser = {
+        ...mockUser,
+        email: mockUpdateUserDto().email
+      }
+      const spyUpdate = jest.spyOn(usersService, 'update')
+      jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedUser)
+      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedUser)
+
+      expect(await usersService.update(mockUser.id, mockUpdateUserDto())).toStrictEqual(
+        mockMergedUser
+      )
+
+      expect(mockRepository.merge).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto())
     })
   })
 })
