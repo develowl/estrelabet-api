@@ -1,5 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types'
-import { OmitType } from '@nestjs/mapped-types/dist'
+import { OmitType, PartialType } from '@nestjs/swagger'
 import { CreateCompanyDto } from './create-company.dto'
 
 export class UpdateCompanyDto extends OmitType(PartialType(CreateCompanyDto), ['cnpj'] as const) {}
