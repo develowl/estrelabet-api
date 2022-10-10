@@ -5,6 +5,7 @@ import { Repository } from 'typeorm'
 import { CompaniesService } from '../companies/companies.service'
 import { fetchAddress } from '../helpers'
 import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './entities/user.entity'
 
 @Injectable()
@@ -36,6 +37,33 @@ export class UsersService {
         throw error
       }
       throw new BadRequestException('Unable to create')
+    }
+  }
+
+  async update(id: number, { address, idCompany, ...dto }: UpdateUserDto): Promise<User> {
+    try {
+      const foundUser = await this.get(id)
+
+      if (!address && !idCompany) {
+        this.repo.merge(foundUser, { ...dto })
+      } else {
+        if (address) {
+          const fetchedAddress = await fetchAddress(address)
+          this.repo.merge(foundUser, { ...dto, address: fetchedAddress })
+        }
+
+        if (idCompany) {
+          const foundCompany = await this.companiesService.get(idCompany)
+          this.repo.merge(foundUser, { ...dto, company: foundCompany })
+        }
+      }
+
+      return await this.repo.save(foundUser)
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+      throw new BadRequestException('Unable to update')
     }
   }
 }
