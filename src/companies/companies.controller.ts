@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common'
 import {
-  ApiAcceptedResponse,
+  ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -38,6 +38,7 @@ export class CompaniesController {
   @Post()
   @ApiOperation({ summary: 'Create a new Company' })
   @ApiCreatedResponse({ description: 'Created new Company', schema: { example: mockCompany } })
+  @ApiBadRequestResponse({ description: 'Unable to create' })
   async create(@Body() createCompanyDto: CreateCompanyDto): Promise<Company> {
     return await this.service.create(createCompanyDto)
   }
@@ -45,10 +46,11 @@ export class CompaniesController {
   @Put(':id')
   @ApiOperation({ summary: 'Update an existing Company' })
   @ApiParam({ name: 'id', description: 'Company id that is stored in the database', example: 1 })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     description: 'Updated existing Company',
     schema: { example: { ...mockCompany, name: 'UPDATED COMPANY S.A.' } }
   })
+  @ApiBadRequestResponse({ description: 'Unable to update' })
   async update(
     @Param('id') id: number,
     @Body() updateCompanyDto: UpdateCompanyDto
@@ -59,8 +61,9 @@ export class CompaniesController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an existing Company' })
   @ApiParam({ name: 'id', description: 'Company id that is stored in the database', example: 1 })
-  @ApiAcceptedResponse({ description: 'Deleted Company', schema: { example: mockCompany } })
+  @ApiOkResponse({ description: 'Deleted Company', schema: { example: mockCompany } })
   @ApiNotFoundResponse({ description: 'Company not found' })
+  @ApiBadRequestResponse({ description: 'Unable to delete' })
   async delete(@Param('id') id: number): Promise<Company> {
     return this.service.delete(id)
   }
