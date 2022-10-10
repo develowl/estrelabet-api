@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common/decorators'
 import { Inject } from '@nestjs/common/decorators/core/inject.decorator'
 import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
+import { fetchAddress } from 'src/utils/helpers'
 import { Repository } from 'typeorm'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { Company } from './entities/company.entity'
@@ -28,15 +29,7 @@ export class CompaniesService {
 
   async create({ address: { cep, num }, ...dto }: CreateCompanyDto): Promise<Company> {
     try {
-      const cepApi = `${this.configService.get<string>('CEP_API')}/${cep}/json`
-      const address = await fetch(cepApi)
-        .then((data) => data.json())
-        .then(({ logradouro, complemento, bairro, localidade, uf, cep }) => {
-          return `${logradouro}, ${num},${
-            complemento ? `${complemento},` : ''
-          } ${bairro}, ${localidade} - ${uf}, ${cep}`
-        })
-
+      const address = await fetchAddress({ cep, num })
       return await this.repo.save(this.repo.create({ ...dto, address }))
     } catch {
       throw new BadRequestException('Unable to create')
