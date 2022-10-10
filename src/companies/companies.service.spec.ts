@@ -29,7 +29,7 @@ describe('CompaniesService', () => {
   })
 
   afterEach(() => {
-    fetchMock.mockClear()
+    mockFetch.mockClear()
     jest.clearAllMocks()
   })
 
