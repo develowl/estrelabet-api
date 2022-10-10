@@ -1,3 +1,5 @@
+import { BadRequestException } from '@nestjs/common'
+import fetch from 'node-fetch'
 import { AddressDto } from '../common/dtos/address.dto'
 
 export const sanitizeCnpj = (cnpj: string) => {
@@ -18,7 +20,11 @@ export const fetchAddress = async ({ cep, num }: AddressDto) => {
   const cepApi = `${url}/${sanitizedCep}/json`
   return await fetch(cepApi)
     .then((data) => data.json())
-    .then(({ logradouro, complemento, bairro, localidade, uf, cep }) => {
+    .then((data) => {
+      if (data?.erro) throw new BadRequestException('Address not found')
+
+      const { logradouro, complemento, bairro, localidade, uf, cep } = data
+
       return `${logradouro}, ${num},${
         complemento ? `${complemento},` : ''
       } ${bairro}, ${localidade} - ${uf}, ${cep}`
