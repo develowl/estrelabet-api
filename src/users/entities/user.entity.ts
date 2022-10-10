@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Company } from '../../companies/entities/company.entity'
-import { sanitizeCPF } from '../../helpers'
+import { sanitizeCPF, sanitizePhone } from '../../helpers'
 
 @Entity()
 export class User {
@@ -11,8 +11,8 @@ export class User {
     unique: true,
     length: 11,
     transformer: {
-      to: (value: string) => value.replace(/\D/g, ''),
-      from: (value: string) => sanitizeCPF(value)
+      to: (value) => value.replace(/\D/g, ''),
+      from: (value) => sanitizeCPF(value)
     }
   })
   cpf: string
@@ -20,10 +20,15 @@ export class User {
   @Column()
   name: string
 
-  @Column()
+  @Column({ unique: true })
   email: string
 
-  @Column()
+  @Column({
+    transformer: {
+      to: (value) => value.replace(/\D/g, ''),
+      from: (value) => sanitizePhone(value)
+    }
+  })
   phone: string
 
   @Column()
