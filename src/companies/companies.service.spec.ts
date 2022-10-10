@@ -51,7 +51,7 @@ describe('CompaniesService', () => {
 
     it('should throws an exception when not found a valid company', async () => {
       jest
-        .spyOn(mockRepository, 'findOneByOrFail')
+        .spyOn(mockRepository, 'save')
         .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
 
       await expect(companiesService.get(mockCompany.id)).rejects.toThrow(NotFoundException)
@@ -79,14 +79,13 @@ describe('CompaniesService', () => {
     })
 
     it('should throws an exception when creation goes wrong', async () => {
-      const spyCreate = jest
-        .spyOn(companiesService, 'create')
-        .mockRejectedValueOnce(new BadRequestException())
+      jest
+        .spyOn(mockRepository, 'findOneByOrFail')
+        .mockReturnValueOnce(new Promise((_, reject) => reject(new BadRequestException())))
 
       await expect(companiesService.create(mockCreateCompanyDto)).rejects.toThrow(
         BadRequestException
       )
-      expect(spyCreate).toHaveBeenCalledWith(mockCreateCompanyDto)
     })
   })
 
@@ -110,36 +109,36 @@ describe('CompaniesService', () => {
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
       expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto())
     })
-  })
 
-  it('should return a company with updated data - without address', async () => {
-    const mockMergedCompany = {
-      ...mockCompany,
-      name: mockUpdateCompanyDto().name
-    }
+    it('should return a company with updated data - without address', async () => {
+      const mockMergedCompany = {
+        ...mockCompany,
+        name: mockUpdateCompanyDto().name
+      }
 
-    const spyUpdate = jest.spyOn(companiesService, 'update')
-    jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
-    jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedCompany)
-    jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedCompany)
+      const spyUpdate = jest.spyOn(companiesService, 'update')
+      jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
+      jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedCompany)
+      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedCompany)
 
-    expect(
-      await companiesService.update(mockCompany.id, mockUpdateCompanyDto(false))
-    ).toStrictEqual(mockMergedCompany)
+      expect(
+        await companiesService.update(mockCompany.id, mockUpdateCompanyDto(false))
+      ).toStrictEqual(mockMergedCompany)
 
-    expect(mockRepository.merge).toHaveBeenCalledTimes(1)
-    expect(mockRepository.save).toHaveBeenCalledTimes(1)
-    expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto(false))
-  })
+      expect(mockRepository.merge).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto(false))
+    })
 
-  it('should throws an exception when updating goes wrong', async () => {
-    const spyUpdate = jest
-      .spyOn(companiesService, 'update')
-      .mockRejectedValueOnce(new BadRequestException())
+    it('should throws an exception when updating goes wrong', async () => {
+      jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
+      jest
+        .spyOn(mockRepository, 'save')
+        .mockReturnValueOnce(new Promise((_, reject) => reject(new BadRequestException())))
 
-    await expect(companiesService.update(mockCompany.id, mockUpdateCompanyDto())).rejects.toThrow(
-      BadRequestException
-    )
-    expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto())
+      await expect(companiesService.update(mockCompany.id, mockUpdateCompanyDto())).rejects.toThrow(
+        BadRequestException
+      )
+    })
   })
 })
