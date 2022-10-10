@@ -76,4 +76,14 @@ describe('CompaniesController', () => {
       expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto())
     })
   })
+
+  describe('delete', () => {
+    it('should delete and return deleted company', async () => {
+      const spyDelete = jest.spyOn(companiesController, 'delete')
+      jest.spyOn(companiesService, 'delete').mockResolvedValueOnce(mockCompany)
+
+      expect(await companiesController.delete(mockCompany.id)).toStrictEqual(mockCompany)
+      expect(spyDelete).toHaveBeenCalledWith(mockCompany.id)
+    })
+  })
 })
