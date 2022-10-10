@@ -1,12 +1,25 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { AppDataSource } from './data-source'
+import { CompaniesModule } from './companies/companies.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env.example' }),
-    TypeOrmModule.forRoot(AppDataSource.options)
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('MYSQL_HOST'),
+        username: configService.get('MYSQL_USER'),
+        password: configService.get('MYSQL_PASSWORD'),
+        database: configService.get('MYSQL_DATABASE'),
+        entities: [__dirname + '/**/*.entity.{ts,js}'],
+        synchronize: true
+      })
+    }),
+    CompaniesModule
   ]
 })
 export class AppModule {}
