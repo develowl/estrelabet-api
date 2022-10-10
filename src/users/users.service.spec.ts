@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import mockFetch from 'jest-fetch-mock'
 import { Repository } from 'typeorm'
+import { CompaniesService } from '../companies/companies.service'
 import { mockCreateUserDto, mockUser } from '../utils/mock/users'
 import { User } from './entities/user.entity'
 import { UsersService } from './users.service'
@@ -18,6 +19,16 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User),
           useClass: Repository
+        },
+        {
+          provide: CompaniesService,
+          useValue: {
+            get: jest.fn(),
+            find: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn()
+          }
         }
       ]
     }).compile()
