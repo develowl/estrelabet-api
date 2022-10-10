@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { mockCompany } from '../utils/mock/company'
+import { mockCompany, mockCreateCompanyDto } from '../utils/mock/company'
 import { CompaniesController } from './companies.controller'
 import { CompaniesService } from './companies.service'
 import { Company } from './entities/company.entity'
@@ -47,6 +47,15 @@ describe('CompaniesController', () => {
     it('should return an array of valid companies', async () => {
       jest.spyOn(companiesService, 'find').mockResolvedValueOnce([mockCompany])
       expect(await companiesController.find()).toStrictEqual([mockCompany])
+    })
+  })
+
+  describe('create', () => {
+    it('should create and return a valid company', async () => {
+      const spyCreate = jest.spyOn(companiesService, 'create').mockResolvedValueOnce(mockCompany)
+
+      expect(await companiesController.create(mockCreateCompanyDto)).toStrictEqual(mockCompany)
+      expect(spyCreate).toHaveBeenCalledWith(mockCreateCompanyDto)
     })
   })
 })
