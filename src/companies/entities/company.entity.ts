@@ -1,11 +1,4 @@
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn
-} from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { sanitizeCnpj, sanitizePhone } from '../../helpers'
 import { User } from '../../users/entities/user.entity'
 
