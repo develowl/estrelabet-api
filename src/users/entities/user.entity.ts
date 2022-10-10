@@ -29,7 +29,7 @@ export class User {
   @Column()
   address: string
 
-  @ManyToOne(() => Company, (company) => company.id, { eager: true })
+  @ManyToOne(() => Company, (company) => company.id, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_company' })
   company: Company
 }
