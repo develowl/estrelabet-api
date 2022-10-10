@@ -13,15 +13,19 @@ export const mockCreateCompanyDto: CreateCompanyDto = {
   }
 }
 
-export const mockUpdateCompanyDto: UpdateCompanyDto = {
-  name: 'Company S.A.',
+export const mockUpdateCompanyDto: (withAddress?: boolean) => UpdateCompanyDto = (
+  withAddress = true
+) => ({
+  name: 'Company LTDA',
   email: 'company@company.com',
   phone: '51941457841',
-  address: {
-    cep: '99999-999',
-    num: 26
-  }
-}
+  address: !withAddress
+    ? undefined
+    : {
+        cep: '99999-999',
+        num: 26
+      }
+})
 
 export const mockCompany: Company = {
   id: 1,
