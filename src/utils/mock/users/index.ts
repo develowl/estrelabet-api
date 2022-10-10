@@ -1,5 +1,5 @@
-import { UpdateUserDto } from 'src/users/dto/update-user.dto'
 import { CreateUserDto } from '../../../users/dto/create-user.dto'
+import { UpdateUserDto } from '../../../users/dto/update-user.dto'
 import { User } from '../../../users/entities/user.entity'
 import { mockCompany } from '../company'
 
