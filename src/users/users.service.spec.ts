@@ -172,5 +172,32 @@ describe('UsersService', () => {
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
     })
+
+    it('should throw an exception when not found a valid company', async () => {
+      const spyUpdate = jest.spyOn(usersService, 'update')
+      jest
+        .spyOn(companiesService, 'get')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
+
+      await expect(
+        usersService.update(mockUser.id, mockUpdateUserDto(false, true))
+      ).rejects.toThrow(NotFoundException)
+      expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
+    })
+
+    it('should throws an exception when updating goes wrong', async () => {
+      jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      jest
+        .spyOn(mockRepository, 'save')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new BadRequestException()))
+        )
+
+      await expect(usersService.update(mockUser.id, mockUpdateUserDto())).rejects.toThrow(
+        BadRequestException
+      )
+    })
   })
 })
