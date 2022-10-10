@@ -79,14 +79,14 @@ describe('CompaniesService', () => {
     })
 
     it('should throws an exception when creation goes wrong', async () => {
-      jest.spyOn(mockRepository, 'save').mockImplementationOnce(async () => {
-        return await new Promise((_, reject) => reject(new Error()))
-      })
-      jest.spyOn(companiesService, 'create').mockRejectedValueOnce(new BadRequestException())
+      const spyCreate = jest
+        .spyOn(companiesService, 'create')
+        .mockRejectedValueOnce(new BadRequestException())
 
       await expect(companiesService.create(mockCreateCompanyDto)).rejects.toThrow(
         BadRequestException
       )
+      expect(spyCreate).toHaveBeenCalledWith(mockCreateCompanyDto)
     })
   })
 
