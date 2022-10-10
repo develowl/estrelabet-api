@@ -49,7 +49,7 @@ describe('CompaniesService', () => {
 
     it('should throws an exception when not found a valid company', async () => {
       jest
-        .spyOn(mockRepository, 'save')
+        .spyOn(mockRepository, 'findOneByOrFail')
         .mockImplementationOnce(
           async () => await new Promise((_, reject) => reject(new NotFoundException()))
         )
