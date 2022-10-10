@@ -203,15 +203,27 @@ describe('UsersService', () => {
       expect(await usersService.delete(mockUser.id)).toStrictEqual(mockUser)
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
-  })
 
-  it('should throw an exception when not found a valid user', async () => {
-    jest
-      .spyOn(usersService, 'get')
-      .mockImplementationOnce(
-        async () => await new Promise((_, reject) => reject(new NotFoundException()))
-      )
+    it('should throw an exception when not found a valid user', async () => {
+      jest
+        .spyOn(usersService, 'get')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
 
-    await expect(usersService.delete(mockUser.id)).rejects.toThrow(NotFoundException)
+      await expect(usersService.delete(mockUser.id)).rejects.toThrow(NotFoundException)
+    })
+
+    it('should throw an exception when deleting goes wrong', async () => {
+      const spyGet = jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      jest
+        .spyOn(mockRepository, 'remove')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new BadRequestException()))
+        )
+
+      await expect(usersService.delete(mockUser.id)).rejects.toThrow(BadRequestException)
+      expect(spyGet).toHaveBeenCalledWith(mockUser.id)
+    })
   })
 })
