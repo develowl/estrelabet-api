@@ -1,4 +1,3 @@
-import { NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -42,16 +41,6 @@ describe('CompaniesController', () => {
 
       expect(await companiesController.get(mockCompany.id)).toStrictEqual(mockCompany)
       expect(spyGet).toHaveBeenCalledWith(mockCompany.id)
-    })
-
-    it('should throw an exception when not found a valid company', async () => {
-      jest
-        .spyOn(companiesService, 'get')
-        .mockImplementationOnce(
-          async () => await new Promise((_, reject) => reject(new NotFoundException()))
-        )
-
-      await expect(companiesController.get(mockCompany.id)).rejects.toThrow(NotFoundException)
     })
   })
 
