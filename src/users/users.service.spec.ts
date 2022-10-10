@@ -1,13 +1,18 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
-import mockFetch from 'jest-fetch-mock'
+import * as helpers from '../helpers'
 import { Repository } from 'typeorm'
 import { CompaniesService } from '../companies/companies.service'
 import { mockCompany } from '../utils/mock/company'
 import { mockCreateUserDto, mockUpdateUserDto, mockUser } from '../utils/mock/users'
 import { User } from './entities/user.entity'
 import { UsersService } from './users.service'
+
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  fetchAddress: jest.fn()
+}))
 
 describe('UsersService', () => {
   let usersService: UsersService
@@ -31,15 +36,9 @@ describe('UsersService', () => {
 
     usersService = module.get<UsersService>(UsersService)
     mockRepository = module.get<Repository<User>>(getRepositoryToken(User))
-
-    mockFetch.enableMocks()
   })
 
-  afterEach(() => {
-    mockFetch.resetMocks()
-    mockFetch.mockClear()
-    jest.clearAllMocks()
-  })
+  afterEach(() => jest.clearAllMocks())
 
   it('should be defined', () => {
     expect(usersService).toBeDefined()
@@ -78,7 +77,12 @@ describe('UsersService', () => {
   describe('create/save', () => {
     it('should return a new user', async () => {
       const spyCreate = jest.spyOn(usersService, 'create')
-      mockFetch.mockResponseOnce(JSON.stringify(mockCreateUserDto.address))
+      jest
+        .spyOn(helpers, 'fetchAddress')
+        .mockImplementationOnce(
+          async () =>
+            await new Promise((resolve) => resolve(JSON.stringify(mockCreateUserDto.address)))
+        )
       jest.spyOn(mockRepository, 'create').mockReturnValueOnce(mockUser)
       jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockUser)
 
@@ -136,7 +140,12 @@ describe('UsersService', () => {
       }
       const spyUpdate = jest.spyOn(usersService, 'update')
       jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
-      mockFetch.mockResponseOnce(JSON.stringify(mockUpdateUserDto(true).address))
+      jest
+        .spyOn(helpers, 'fetchAddress')
+        .mockImplementationOnce(
+          async () =>
+            await new Promise((resolve) => resolve(JSON.stringify(mockUpdateUserDto(true).address)))
+        )
       jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedUser)
       jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedUser)
 

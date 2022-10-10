@@ -9,7 +9,7 @@ export const mockCreateCompanyDto: CreateCompanyDto = {
   email: 'company@company.com',
   phone: '51941457841',
   address: {
-    cep: '93290-440',
+    cep: '99999-999',
     num: 26
   }
 }
@@ -23,7 +23,7 @@ export const mockUpdateCompanyDto: (withAddress?: boolean) => UpdateCompanyDto =
   address: !withAddress
     ? undefined
     : {
-        cep: '93290-440',
+        cep: '99999-999',
         num: 26
       }
 })

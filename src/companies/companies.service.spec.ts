@@ -1,11 +1,16 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
-import mockFetch from 'jest-fetch-mock'
+import * as helpers from '../helpers'
 import { Repository } from 'typeorm'
 import { mockCompany, mockCreateCompanyDto, mockUpdateCompanyDto } from '../utils/mock/company'
 import { CompaniesService } from './companies.service'
 import { Company } from './entities/company.entity'
+
+jest.mock('../helpers', () => ({
+  ...jest.requireActual('../helpers'),
+  fetchAddress: jest.fn()
+}))
 
 describe('CompaniesService', () => {
   let companiesService: CompaniesService
@@ -24,15 +29,9 @@ describe('CompaniesService', () => {
 
     companiesService = module.get<CompaniesService>(CompaniesService)
     mockRepository = module.get<Repository<Company>>(getRepositoryToken(Company))
-
-    mockFetch.enableMocks()
   })
 
-  afterEach(() => {
-    mockFetch.mockClear()
-    mockFetch.resetMocks()
-    jest.clearAllMocks()
-  })
+  afterEach(() => jest.clearAllMocks())
 
   it('should be defined', () => {
     expect(companiesService).toBeDefined()
@@ -70,7 +69,12 @@ describe('CompaniesService', () => {
 
   describe('create/save', () => {
     it('should return a new company', async () => {
-      mockFetch.mockResponseOnce(JSON.stringify(mockCreateCompanyDto.address))
+      jest
+        .spyOn(helpers, 'fetchAddress')
+        .mockImplementationOnce(
+          async () =>
+            await new Promise((resolve) => resolve(JSON.stringify(mockCreateCompanyDto.address)))
+        )
       jest.spyOn(mockRepository, 'create').mockReturnValueOnce(mockCompany)
       jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockCompany)
 
@@ -100,7 +104,12 @@ describe('CompaniesService', () => {
       }
       const spyUpdate = jest.spyOn(companiesService, 'update')
       jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
-      mockFetch.mockResponseOnce(JSON.stringify(mockUpdateCompanyDto().address))
+      jest
+        .spyOn(helpers, 'fetchAddress')
+        .mockImplementationOnce(
+          async () =>
+            await new Promise((resolve) => resolve(JSON.stringify(mockUpdateCompanyDto().address)))
+        )
       jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedCompany)
       jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedCompany)
 
