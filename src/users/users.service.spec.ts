@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import mockFetch from 'jest-fetch-mock'
 import { Repository } from 'typeorm'
-import { mockUser } from '../utils/mock/users'
+import { mockCreateUserDto, mockUser } from '../utils/mock/users'
 import { User } from './entities/user.entity'
 import { UsersService } from './users.service'
 
@@ -62,6 +62,18 @@ describe('UsersService', () => {
 
       expect(await usersService.find()).toHaveLength(1)
       expect(mockRepository.find).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('create/save', () => {
+    it('should return a new user', async () => {
+      mockFetch.mockResponseOnce(JSON.stringify(mockCreateUserDto.address))
+      jest.spyOn(mockRepository, 'create').mockReturnValueOnce(mockUser)
+      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockUser)
+
+      expect(await usersService.create(mockCreateUserDto)).toStrictEqual(mockUser)
+      expect(mockRepository.create).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(1)
     })
   })
 })
