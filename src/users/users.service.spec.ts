@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import mockFetch from 'jest-fetch-mock'
 import { Repository } from 'typeorm'
 import { CompaniesService } from '../companies/companies.service'
+import { mockCompany } from '../utils/mock/company'
 import { mockCreateUserDto, mockUpdateUserDto, mockUser } from '../utils/mock/users'
 import { User } from './entities/user.entity'
 import { UsersService } from './users.service'
@@ -149,6 +150,27 @@ describe('UsersService', () => {
       expect(mockRepository.merge).toHaveBeenCalledTimes(1)
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(true))
+    })
+
+    it('should return a user with updated data - without new address but with a new idCompany', async () => {
+      const mockMergedUser = {
+        ...mockUser,
+        email: mockUpdateUserDto(false, true).email,
+        company: { ...mockCompany, id: 2 }
+      }
+      const spyUpdate = jest.spyOn(usersService, 'update')
+      jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockMergedUser.company)
+      jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedUser)
+      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedUser)
+
+      expect(await usersService.update(mockUser.id, mockUpdateUserDto(false, true))).toStrictEqual(
+        mockMergedUser
+      )
+
+      expect(mockRepository.merge).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
     })
   })
 })
