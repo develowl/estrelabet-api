@@ -13,7 +13,7 @@ const baseUserDto = {
 export const mockCreateUserDto: CreateUserDto = {
   ...baseUserDto,
   address: {
-    cep: '11111-111',
+    cep: '93290-440',
     num: 26
   },
   idCompany: 1
@@ -29,7 +29,7 @@ export const mockUpdateUserDto: (withAddress?: boolean, newCompany?: boolean) =>
   address: !withAddress
     ? undefined
     : {
-        cep: '99999-999',
+        cep: '93290-440',
         num: 26
       },
   idCompany: !newCompany ? undefined : 2
