@@ -8,7 +8,7 @@ import {
   ApiParam
 } from '@nestjs/swagger'
 import { ApiTags } from '@nestjs/swagger/dist'
-import { mockCompany } from 'src/utils/mock/company'
+import { mockCompany } from '../utils/mock/company'
 import { CompaniesService } from './companies.service'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { UpdateCompanyDto } from './dto/update-company.dto'
