@@ -141,7 +141,7 @@ describe('CompaniesService', () => {
       )
     })
 
-    it('should throws an exception when updating not found a valid company', async () => {
+    it('should throws an exception when not found a valid company', async () => {
       jest
         .spyOn(companiesService, 'get')
         .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
@@ -159,6 +159,14 @@ describe('CompaniesService', () => {
 
       expect(await companiesService.delete(mockCompany.id)).toStrictEqual(mockCompany)
       expect(spyGet).toHaveBeenCalledWith(mockCompany.id)
+    })
+
+    it('should throw an exception when not found a valid company', async () => {
+      jest
+        .spyOn(mockRepository, 'remove')
+        .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
+
+      await expect(companiesService.delete(mockCompany.id)).rejects.toThrow(NotFoundException)
     })
   })
 })
