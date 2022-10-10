@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { mockCompany, mockCreateCompanyDto } from '../utils/mock/company'
+import { mockCompany, mockCreateCompanyDto, mockUpdateCompanyDto } from '../utils/mock/company'
 import { CompaniesController } from './companies.controller'
 import { CompaniesService } from './companies.service'
 import { Company } from './entities/company.entity'
@@ -56,6 +56,22 @@ describe('CompaniesController', () => {
 
       expect(await companiesController.create(mockCreateCompanyDto)).toStrictEqual(mockCompany)
       expect(spyCreate).toHaveBeenCalledWith(mockCreateCompanyDto)
+    })
+  })
+
+  describe('update', () => {
+    it('should update and return a valid company', async () => {
+      const mockMergedCompany = {
+        ...mockCompany,
+        name: mockUpdateCompanyDto().name
+      }
+      const spyUpdate = jest.spyOn(companiesController, 'update')
+      jest.spyOn(companiesService, 'update').mockResolvedValueOnce(mockMergedCompany)
+
+      expect(
+        await companiesController.update(mockCompany.id, mockUpdateCompanyDto())
+      ).toStrictEqual(mockMergedCompany)
+      expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto())
     })
   })
 })
