@@ -49,4 +49,11 @@ describe('UsersController', () => {
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
   })
+
+  describe('list', () => {
+    it('should return an array of valid companies', async () => {
+      jest.spyOn(usersService, 'find').mockResolvedValueOnce([mockUser])
+      expect(await usersController.find()).toStrictEqual([mockUser])
+    })
+  })
 })
