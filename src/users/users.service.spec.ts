@@ -194,4 +194,14 @@ describe('UsersService', () => {
       )
     })
   })
+
+  describe('delete', () => {
+    it('should delete a valid user', async () => {
+      const spyGet = jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      jest.spyOn(mockRepository, 'remove').mockResolvedValueOnce(mockUser)
+
+      expect(await usersService.delete(mockUser.id)).toStrictEqual(mockUser)
+      expect(spyGet).toHaveBeenCalledWith(mockUser.id)
+    })
+  })
 })
