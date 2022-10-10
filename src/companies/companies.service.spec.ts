@@ -179,4 +179,16 @@ describe('CompaniesService', () => {
       await expect(companiesService.delete(mockCompany.id)).rejects.toThrow(NotFoundException)
     })
   })
+
+  it('should throw an exception when deleting goes wrong', async () => {
+    const spyGet = jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
+    jest
+      .spyOn(mockRepository, 'remove')
+      .mockImplementationOnce(
+        async () => await new Promise((_, reject) => reject(new BadRequestException()))
+      )
+
+    await expect(companiesService.delete(mockCompany.id)).rejects.toThrow(BadRequestException)
+    expect(spyGet).toHaveBeenCalledWith(mockCompany.id)
+  })
 })
