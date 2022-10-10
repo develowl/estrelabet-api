@@ -10,4 +10,9 @@ export class CompaniesController {
   async get(@Param(':id') id: number): Promise<Company> {
     return await this.service.get(id)
   }
+
+  @Get()
+  async find(): Promise<Company[]> {
+    return await this.service.find()
+  }
 }
