@@ -7,7 +7,11 @@ export const sanitizeCnpj = (cnpj: string) => {
 }
 
 export const sanitizeCPF = (cpf: string) => {
-  return cpf.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4')
+  return cpf?.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4')
+}
+
+export const sanitizePhone = (phone: string) => {
+  return phone?.replace(/\D/g, '').replace(/(\d{2})(\d{4,5})(\d{4})/g, '($1) $2-$3')
 }
 
 export const sanitizeCep = (cep: string) => {
