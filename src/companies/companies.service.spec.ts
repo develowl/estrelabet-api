@@ -80,7 +80,7 @@ describe('CompaniesService', () => {
 
     it('should throws an exception when creation goes wrong', async () => {
       jest
-        .spyOn(mockRepository, 'findOneByOrFail')
+        .spyOn(mockRepository, 'save')
         .mockImplementationOnce(
           async () => await new Promise((_, reject) => reject(new BadRequestException()))
         )
