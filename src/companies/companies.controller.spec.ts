@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -36,10 +37,21 @@ describe('CompaniesController', () => {
 
   describe('get', () => {
     it('should return a valid company', async () => {
-      const spyGet = jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
+      const spyGet = jest.spyOn(companiesController, 'get')
+      jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
 
       expect(await companiesController.get(mockCompany.id)).toStrictEqual(mockCompany)
       expect(spyGet).toHaveBeenCalledWith(mockCompany.id)
+    })
+
+    it('should throw an exception when not found a valid company', async () => {
+      jest
+        .spyOn(companiesService, 'get')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
+
+      await expect(companiesController.get(mockCompany.id)).rejects.toThrow(NotFoundException)
     })
   })
 
@@ -52,7 +64,8 @@ describe('CompaniesController', () => {
 
   describe('create', () => {
     it('should create and return a valid company', async () => {
-      const spyCreate = jest.spyOn(companiesService, 'create').mockResolvedValueOnce(mockCompany)
+      const spyCreate = jest.spyOn(companiesController, 'create')
+      jest.spyOn(companiesService, 'create').mockResolvedValueOnce(mockCompany)
 
       expect(await companiesController.create(mockCreateCompanyDto)).toStrictEqual(mockCompany)
       expect(spyCreate).toHaveBeenCalledWith(mockCreateCompanyDto)
