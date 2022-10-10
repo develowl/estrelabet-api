@@ -94,21 +94,41 @@ describe('CompaniesService', () => {
     it('should return a company with updated data - with address', async () => {
       const mockMergedCompany = {
         ...mockCompany,
-        name: mockUpdateCompanyDto.name
+        name: mockUpdateCompanyDto().name
       }
       const spyUpdate = jest.spyOn(companiesService, 'update')
       jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
-      mockFetch.mockResponseOnce(JSON.stringify(mockUpdateCompanyDto.address))
+      mockFetch.mockResponseOnce(JSON.stringify(mockUpdateCompanyDto().address))
       jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedCompany)
       jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedCompany)
 
-      expect(await companiesService.update(mockCompany.id, mockUpdateCompanyDto)).toStrictEqual(
+      expect(await companiesService.update(mockCompany.id, mockUpdateCompanyDto())).toStrictEqual(
         mockMergedCompany
       )
 
       expect(mockRepository.merge).toHaveBeenCalledTimes(1)
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
-      expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto)
+      expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto())
     })
+  })
+
+  it('should return a company with updated data - without address', async () => {
+    const mockMergedCompany = {
+      ...mockCompany,
+      name: mockUpdateCompanyDto().name
+    }
+
+    const spyUpdate = jest.spyOn(companiesService, 'update')
+    jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
+    jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedCompany)
+    jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedCompany)
+
+    expect(
+      await companiesService.update(mockCompany.id, mockUpdateCompanyDto(false))
+    ).toStrictEqual(mockMergedCompany)
+
+    expect(mockRepository.merge).toHaveBeenCalledTimes(1)
+    expect(mockRepository.save).toHaveBeenCalledTimes(1)
+    expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto(false))
   })
 })
