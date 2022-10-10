@@ -8,10 +8,12 @@ services:
       - '3000:3000'
     volumes:
       - .:/usr/api
+    env_file:
+      - .env.example
 
   db:
     image: mysql
     ports:
       - '3306:3306'
     env_file:
-      - .env.local
+      - .env.example
