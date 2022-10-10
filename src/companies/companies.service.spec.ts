@@ -151,4 +151,14 @@ describe('CompaniesService', () => {
       )
     })
   })
+
+  describe('delete', () => {
+    it('should delete a valid company', async () => {
+      const spyGet = jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
+      jest.spyOn(mockRepository, 'remove').mockResolvedValueOnce(mockCompany)
+
+      expect(await companiesService.delete(mockCompany.id)).toStrictEqual(mockCompany)
+      expect(spyGet).toHaveBeenCalledWith(mockCompany.id)
+    })
+  })
 })
