@@ -1,21 +1,7 @@
-import { IsCEP, IsCNPJ } from 'brazilian-class-validator'
+import { IsCNPJ } from 'brazilian-class-validator'
 import { IsNotEmpty } from 'class-validator'
-import {
-  IsEmail,
-  IsNumber,
-  IsPhoneNumber,
-  IsString
-} from 'class-validator/types/decorator/decorators'
-
-class AddressDto {
-  @IsNotEmpty()
-  @IsCEP()
-  cep: string
-
-  @IsNotEmpty()
-  @IsNumber()
-  num: number
-}
+import { IsEmail, IsPhoneNumber, IsString } from 'class-validator/types/decorator/decorators'
+import { AddressDto } from 'src/common/dtos/address.dto'
 
 export class CreateCompanyDto {
   @IsNotEmpty()
