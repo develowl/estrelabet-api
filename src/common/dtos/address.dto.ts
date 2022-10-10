@@ -1,6 +1,5 @@
 import { IsCEP } from 'brazilian-class-validator'
-import { IsNotEmpty } from 'class-validator'
-import { IsNumber } from 'class-validator/types/decorator/decorators'
+import { IsNotEmpty, IsNumber } from 'class-validator'
 
 export class AddressDto {
   @IsNotEmpty()
