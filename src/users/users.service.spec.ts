@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import mockFetch from 'jest-fetch-mock'
@@ -11,6 +11,13 @@ import { UsersService } from './users.service'
 describe('UsersService', () => {
   let usersService: UsersService
   let mockRepository: Repository<User>
+  const companiesService = {
+    get: jest.fn(),
+    find: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn()
+  }
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,13 +29,7 @@ describe('UsersService', () => {
         },
         {
           provide: CompaniesService,
-          useValue: {
-            get: jest.fn(),
-            find: jest.fn(),
-            create: jest.fn(),
-            update: jest.fn(),
-            delete: jest.fn()
-          }
+          useValue: companiesService
         }
       ]
     }).compile()
@@ -78,6 +79,7 @@ describe('UsersService', () => {
 
   describe('create/save', () => {
     it('should return a new user', async () => {
+      const spyCreate = jest.spyOn(usersService, 'create')
       mockFetch.mockResponseOnce(JSON.stringify(mockCreateUserDto.address))
       jest.spyOn(mockRepository, 'create').mockReturnValueOnce(mockUser)
       jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockUser)
@@ -85,6 +87,27 @@ describe('UsersService', () => {
       expect(await usersService.create(mockCreateUserDto)).toStrictEqual(mockUser)
       expect(mockRepository.create).toHaveBeenCalledTimes(1)
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(spyCreate).toHaveBeenCalledWith(mockCreateUserDto)
+    })
+
+    it('should throw an exception when not found a valid company', async () => {
+      jest
+        .spyOn(companiesService, 'get')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
+
+      await expect(usersService.create(mockCreateUserDto)).rejects.toThrow(NotFoundException)
+    })
+
+    it('should throw an exception when creation goes wrong', async () => {
+      jest
+        .spyOn(mockRepository, 'save')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new BadRequestException()))
+        )
+
+      await expect(usersService.create(mockCreateUserDto)).rejects.toThrow(BadRequestException)
     })
   })
 })
