@@ -17,7 +17,17 @@ export class UsersService {
 
   async get(id: number): Promise<User> {
     try {
-      return await this.repo.findOneByOrFail({ id })
+      return await this.repo.findOneOrFail({
+        where: { id },
+        select: {
+          company: {
+            id: true,
+            name: true
+          }
+        },
+        relations: ['company'],
+        loadEagerRelations: false
+      })
     } catch {
       throw new NotFoundException('User not found')
     }
