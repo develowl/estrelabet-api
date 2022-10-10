@@ -1,3 +1,4 @@
+import { UpdateUserDto } from 'src/users/dto/update-user.dto'
 import { CreateUserDto } from '../../../users/dto/create-user.dto'
 import { User } from '../../../users/entities/user.entity'
 import { mockCompany } from '../company'
@@ -17,6 +18,22 @@ export const mockCreateUserDto: CreateUserDto = {
   },
   idCompany: 1
 }
+
+export const mockUpdateUserDto: (withAddress?: boolean, newCompany?: boolean) => UpdateUserDto = (
+  withAddress = false,
+  newCompany = false
+) => ({
+  name: 'User',
+  email: 'user@newcompany.com',
+  phone: '54874523658',
+  address: !withAddress
+    ? undefined
+    : {
+        cep: '99999-999',
+        num: 26
+      },
+  idCompany: !newCompany ? undefined : 2
+})
 
 export const mockUser: User = {
   id: 1,
