@@ -1,11 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import mockFetch from 'jest-fetch-mock'
 import { Repository } from 'typeorm'
 import { mockCompany, mockCreateCompanyDto, mockUpdateCompanyDto } from '../utils/mock/company'
-import { mockConfigService } from '../utils/mock/configService'
 import { CompaniesService } from './companies.service'
 import { Company } from './entities/company.entity'
 
@@ -22,10 +20,6 @@ describe('CompaniesService', () => {
         {
           provide: getRepositoryToken(Company),
           useClass: Repository
-        },
-        {
-          provide: ConfigService,
-          useValue: mockConfigService
         }
       ]
     }).compile()
