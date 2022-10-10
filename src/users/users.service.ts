@@ -24,7 +24,16 @@ export class UsersService {
   }
 
   async find(): Promise<User[]> {
-    return await this.repo.find({ relations: ['company'] })
+    return await this.repo.find({
+      select: {
+        company: {
+          id: true,
+          name: true
+        }
+      },
+      relations: ['company'],
+      loadEagerRelations: false
+    })
   }
 
   async create({ address: { cep, num }, idCompany, ...dto }: CreateUserDto): Promise<User> {
