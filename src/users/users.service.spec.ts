@@ -47,16 +47,16 @@ describe('UsersService', () => {
   describe('get', () => {
     it('should return a valid user', async () => {
       const spyGet = jest.spyOn(usersService, 'get')
-      jest.spyOn(mockRepository, 'findOneByOrFail').mockResolvedValueOnce(mockUser)
+      jest.spyOn(mockRepository, 'findOneOrFail').mockResolvedValueOnce(mockUser)
 
       expect(await usersService.get(mockUser.id)).toBe(mockUser)
-      expect(mockRepository.findOneByOrFail).toHaveBeenCalledTimes(1)
+      expect(mockRepository.findOneOrFail).toHaveBeenCalledTimes(1)
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
 
     it('should throws an exception when not found a valid user', async () => {
       jest
-        .spyOn(mockRepository, 'findOneByOrFail')
+        .spyOn(mockRepository, 'findOneOrFail')
         .mockImplementationOnce(
           async () => await new Promise((_, reject) => reject(new NotFoundException()))
         )
