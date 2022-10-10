@@ -112,7 +112,7 @@ describe('UsersService', () => {
   })
 
   describe('update', () => {
-    it('should return a company with updated data - without address and idCompany', async () => {
+    it('should return a user with updated data - without new address nor new idCompany', async () => {
       const mockMergedUser = {
         ...mockUser,
         email: mockUpdateUserDto().email
@@ -129,6 +129,26 @@ describe('UsersService', () => {
       expect(mockRepository.merge).toHaveBeenCalledTimes(1)
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto())
+    })
+
+    it('should return a user with updated data - with new address nor new idCompany', async () => {
+      const mockMergedUser = {
+        ...mockUser,
+        email: mockUpdateUserDto(true).email
+      }
+      const spyUpdate = jest.spyOn(usersService, 'update')
+      jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      mockFetch.mockResponseOnce(JSON.stringify(mockUpdateUserDto(true).address))
+      jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedUser)
+      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedUser)
+
+      expect(await usersService.update(mockUser.id, mockUpdateUserDto(true))).toStrictEqual(
+        mockMergedUser
+      )
+
+      expect(mockRepository.merge).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(true))
     })
   })
 })
