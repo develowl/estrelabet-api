@@ -17,7 +17,8 @@ import { UsersModule } from './users/users.module'
         password: configService.get('MYSQL_PASSWORD'),
         database: configService.get('MYSQL_DATABASE'),
         entities: [__dirname + '/**/*.entity.{ts,js}'],
-        synchronize: true
+        synchronize: true,
+        logging: true
       })
     }),
     CompaniesModule,
