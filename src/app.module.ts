@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { CompaniesModule } from './companies/companies.module'
 
 @Module({
   imports: [
@@ -18,8 +17,7 @@ import { CompaniesModule } from './companies/companies.module'
         entities: [__dirname + '/**/*.entity.{ts,js}'],
         synchronize: true
       })
-    }),
-    CompaniesModule
+    })
   ]
 })
 export class AppModule {}
