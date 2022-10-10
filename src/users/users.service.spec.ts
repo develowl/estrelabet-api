@@ -204,4 +204,14 @@ describe('UsersService', () => {
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
   })
+
+  it('should throw an exception when not found a valid user', async () => {
+    jest
+      .spyOn(usersService, 'get')
+      .mockImplementationOnce(
+        async () => await new Promise((_, reject) => reject(new NotFoundException()))
+      )
+
+    await expect(usersService.delete(mockUser.id)).rejects.toThrow(NotFoundException)
+  })
 })
