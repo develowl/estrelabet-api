@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import mockFetch from 'jest-fetch-mock'
 import { Repository } from 'typeorm'
-import { mockCompany, mockCreateCompanyDto } from '../utils/mock/company'
+import { mockCompany, mockCreateCompanyDto, mockUpdateCompanyDto } from '../utils/mock/company'
 import { mockConfigService } from '../utils/mock/configService'
 import { CompaniesService } from './companies.service'
 import { Company } from './entities/company.entity'
@@ -87,6 +87,28 @@ describe('CompaniesService', () => {
       await expect(companiesService.create(mockCreateCompanyDto)).rejects.toThrow(
         BadRequestException
       )
+    })
+  })
+
+  describe('update', () => {
+    it('should return a company with updated data - with address', async () => {
+      const mockMergedCompany = {
+        ...mockCompany,
+        name: mockUpdateCompanyDto.name
+      }
+      const spyUpdate = jest.spyOn(companiesService, 'update')
+      jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
+      mockFetch.mockResponseOnce(JSON.stringify(mockUpdateCompanyDto.address))
+      jest.spyOn(mockRepository, 'merge').mockReturnValueOnce(mockMergedCompany)
+      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockMergedCompany)
+
+      expect(await companiesService.update(mockCompany.id, mockUpdateCompanyDto)).toStrictEqual(
+        mockMergedCompany
+      )
+
+      expect(mockRepository.merge).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto)
     })
   })
 })
