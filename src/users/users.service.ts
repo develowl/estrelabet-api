@@ -15,4 +15,8 @@ export class UsersService {
       throw new NotFoundException('User not found')
     }
   }
+
+  async find(): Promise<User[]> {
+    return await this.repo.find()
+  }
 }
