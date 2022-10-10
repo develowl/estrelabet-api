@@ -1,5 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { sanitizeCnpj } from '../../helpers'
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn
+} from 'typeorm'
+import { sanitizeCnpj, sanitizePhone } from '../../helpers'
 import { User } from '../../users/entities/user.entity'
 
 @Entity()
@@ -11,8 +18,8 @@ export class Company {
     unique: true,
     length: 14,
     transformer: {
-      to: (value: string) => value.replace(/\D/g, ''),
-      from: (value: string) => sanitizeCnpj(value)
+      to: (value) => value.replace(/\D/g, ''),
+      from: (value) => sanitizeCnpj(value)
     }
   })
   cnpj: string
@@ -23,7 +30,12 @@ export class Company {
   @Column({ unique: true })
   email: string
 
-  @Column({ unique: true })
+  @Column({
+    transformer: {
+      to: (value) => value.replace(/\D/g, ''),
+      from: (value) => sanitizePhone(value)
+    }
+  })
   phone: string
 
   @Column({ unique: true })
