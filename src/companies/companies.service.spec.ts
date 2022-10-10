@@ -52,7 +52,9 @@ describe('CompaniesService', () => {
     it('should throws an exception when not found a valid company', async () => {
       jest
         .spyOn(mockRepository, 'save')
-        .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
 
       await expect(companiesService.get(mockCompany.id)).rejects.toThrow(NotFoundException)
     })
@@ -81,7 +83,9 @@ describe('CompaniesService', () => {
     it('should throws an exception when creation goes wrong', async () => {
       jest
         .spyOn(mockRepository, 'findOneByOrFail')
-        .mockReturnValueOnce(new Promise((_, reject) => reject(new BadRequestException())))
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new BadRequestException()))
+        )
 
       await expect(companiesService.create(mockCreateCompanyDto)).rejects.toThrow(
         BadRequestException
@@ -130,24 +134,28 @@ describe('CompaniesService', () => {
       expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto(false))
     })
 
+    it('should throws an exception when not found a valid company', async () => {
+      jest
+        .spyOn(companiesService, 'get')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
+
+      await expect(companiesService.update(mockCompany.id, mockUpdateCompanyDto())).rejects.toThrow(
+        NotFoundException
+      )
+    })
+
     it('should throws an exception when updating goes wrong', async () => {
       jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
       jest
         .spyOn(mockRepository, 'save')
-        .mockReturnValueOnce(new Promise((_, reject) => reject(new BadRequestException())))
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new BadRequestException()))
+        )
 
       await expect(companiesService.update(mockCompany.id, mockUpdateCompanyDto())).rejects.toThrow(
         BadRequestException
-      )
-    })
-
-    it('should throws an exception when not found a valid company', async () => {
-      jest
-        .spyOn(companiesService, 'get')
-        .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
-
-      await expect(companiesService.update(mockCompany.id, mockUpdateCompanyDto())).rejects.toThrow(
-        NotFoundException
       )
     })
   })
@@ -164,7 +172,9 @@ describe('CompaniesService', () => {
     it('should throw an exception when not found a valid company', async () => {
       jest
         .spyOn(mockRepository, 'remove')
-        .mockReturnValueOnce(new Promise((_, reject) => reject(new NotFoundException())))
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
 
       await expect(companiesService.delete(mockCompany.id)).rejects.toThrow(NotFoundException)
     })
