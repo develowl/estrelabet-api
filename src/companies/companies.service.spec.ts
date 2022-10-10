@@ -30,7 +30,7 @@ describe('CompaniesService', () => {
       ]
     }).compile()
 
-    companiesService = await module.get(CompaniesService)
+    companiesService = module.get<CompaniesService>(CompaniesService)
     mockRepository = module.get<Repository<Company>>(getRepositoryToken(Company))
   })
 
