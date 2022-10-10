@@ -1,5 +1,5 @@
-import { UpdateCompanyDto } from 'src/companies/dto/update-company.dto'
 import { CreateCompanyDto } from '../../../companies/dto/create-company.dto'
+import { UpdateCompanyDto } from '../../../companies/dto/update-company.dto'
 import { Company } from '../../../companies/entities/company.entity'
 
 export const mockCreateCompanyDto: CreateCompanyDto = {
@@ -30,5 +30,6 @@ export const mockUpdateCompanyDto: (withAddress?: boolean) => UpdateCompanyDto =
 export const mockCompany: Company = {
   id: 1,
   ...mockCreateCompanyDto,
+  cnpj: '11111111111111',
   address: 'Rua Silva, 26, Santo Amaro, São José - GO, 99999-999'
 }

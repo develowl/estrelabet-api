@@ -1,5 +1,5 @@
-import { sanitizeCnpj } from 'src/helpers'
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { sanitizeCnpj } from '../../helpers'
 
 @Entity()
 export class Company {
