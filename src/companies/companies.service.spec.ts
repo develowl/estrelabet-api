@@ -31,7 +31,10 @@ describe('CompaniesService', () => {
     mockRepository = module.get<Repository<Company>>(getRepositoryToken(Company))
   })
 
-  afterEach(() => jest.clearAllMocks())
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.resetAllMocks()
+  })
 
   it('should be defined', () => {
     expect(companiesService).toBeDefined()

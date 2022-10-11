@@ -36,6 +36,7 @@ describe('AuthController', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
+    jest.resetAllMocks()
   })
 
   it('should be defined', () => {
