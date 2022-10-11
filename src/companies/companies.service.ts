@@ -27,7 +27,10 @@ export class CompaniesService {
     try {
       const address = await fetchAddress({ cep, num })
       return await this.repo.save(this.repo.create({ ...dto, address }))
-    } catch {
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error
+      }
       throw new BadRequestException('Unable to create')
     }
   }
