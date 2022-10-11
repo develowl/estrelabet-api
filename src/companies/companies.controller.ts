@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -8,6 +8,7 @@ import {
   ApiParam
 } from '@nestjs/swagger'
 import { ApiTags } from '@nestjs/swagger/dist'
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { mockCompany } from '../utils/mock/company'
 import { CompaniesService } from './companies.service'
 import { CreateCompanyDto } from './dto/create-company.dto'
@@ -15,6 +16,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto'
 import { Company } from './entities/company.entity'
 
 @ApiTags('Companies Operations')
+@UseGuards(JwtAuthGuard)
 @Controller('companies')
 export class CompaniesController {
   constructor(@Inject(CompaniesService) private readonly service: CompaniesService) {}
