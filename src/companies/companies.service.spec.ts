@@ -47,7 +47,7 @@ describe('CompaniesService', () => {
       expect(spyGet).toHaveBeenCalledWith(mockCompany.id)
     })
 
-    it('should throwss an exception when not found a valid company', async () => {
+    it('should throws an exception when not found a valid company', async () => {
       jest
         .spyOn(mockRepository, 'findOneByOrFail')
         .mockImplementationOnce(
@@ -83,7 +83,7 @@ describe('CompaniesService', () => {
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
     })
 
-    it('should throwss an exception when creation goes wrong', async () => {
+    it('should throws an exception when creation goes wrong', async () => {
       jest
         .spyOn(mockRepository, 'save')
         .mockImplementationOnce(
@@ -142,7 +142,7 @@ describe('CompaniesService', () => {
       expect(spyUpdate).toHaveBeenCalledWith(mockCompany.id, mockUpdateCompanyDto(false))
     })
 
-    it('should throwss an exception when not found a valid company', async () => {
+    it('should throws an exception when not found a valid company', async () => {
       jest
         .spyOn(companiesService, 'get')
         .mockImplementationOnce(
@@ -154,7 +154,7 @@ describe('CompaniesService', () => {
       )
     })
 
-    it('should throwss an exception when updating goes wrong', async () => {
+    it('should throws an exception when updating goes wrong', async () => {
       jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockCompany)
       jest
         .spyOn(mockRepository, 'save')

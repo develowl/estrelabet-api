@@ -54,7 +54,7 @@ describe('UsersService', () => {
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
 
-    it('should throwss an exception when not found a valid user', async () => {
+    it('should throws an exception when not found a valid user', async () => {
       jest
         .spyOn(mockRepository, 'findOneOrFail')
         .mockImplementationOnce(
@@ -193,7 +193,7 @@ describe('UsersService', () => {
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
     })
 
-    it('should throwss an exception when updating goes wrong', async () => {
+    it('should throws an exception when updating goes wrong', async () => {
       jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
       jest
         .spyOn(mockRepository, 'save')
