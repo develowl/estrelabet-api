@@ -96,4 +96,12 @@ describe('AuthService', () => {
       expect(spySignout).toHaveBeenCalledWith(mockAdmin.identifier)
     })
   })
+
+  describe('refreshTokens', () => {
+    it('should throw an exception when is tried to refresh tokens without signin previously', async () => {
+      await expect(
+        authService.refreshTokens(mockAdmin.identifier, mockAdmin.refreshToken)
+      ).rejects.toThrow(BadRequestException)
+    })
+  })
 })

@@ -46,7 +46,7 @@ export class AuthService {
   async signout(identifier: string): Promise<{ message: string }> {
     const admin = await this.getAdmin(identifier)
     if (!admin.refreshToken) {
-      throw new BadRequestException('User already signed out')
+      throw new BadRequestException('User not signed in')
     }
 
     await this.updateRefreshToken(identifier, undefined)
@@ -77,6 +77,13 @@ export class AuthService {
     this.mockAdmin = {
       ...user,
       refreshToken: refreshToken || undefined
+    }
+  }
+
+  async refreshTokens(identifier: string, refreshToken: string): Promise<void> {
+    const admin = await this.getAdmin(identifier)
+    if (!admin.refreshToken) {
+      throw new BadRequestException('User not signed id')
     }
   }
 }
