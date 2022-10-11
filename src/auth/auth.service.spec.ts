@@ -122,5 +122,17 @@ describe('AuthService', () => {
         authService.refreshTokens(mockInvalidAdmin.identifier, mockInvalidAdmin.refreshToken)
       ).rejects.toThrow(ForbiddenException)
     })
+
+    it('should refresh tokens successfully', async () => {
+      const spyRefreshTokens = jest.spyOn(authService, 'refreshTokens')
+
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.resolve(true))
+      await authService.signin(mockAdmin)
+
+      expect(
+        await authService.refreshTokens(mockAdmin.identifier, mockAdmin.refreshToken)
+      ).toStrictEqual(mockTokens)
+      expect(spyRefreshTokens).toHaveBeenCalledWith(mockAdmin.identifier, mockAdmin.refreshToken)
+    })
   })
 })
