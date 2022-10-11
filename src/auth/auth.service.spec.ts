@@ -3,15 +3,15 @@ import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exceptio
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import { MockAdmin } from '../types/auth'
 import { Jwt } from '../types/jwt'
 import { mockConfigService } from '../utils/mock/configService'
 import { mockJwtService } from '../utils/mock/jwt'
 import { AuthService } from './auth.service'
 
-jest.mock('bcrypt', () => ({
-  ...jest.requireActual('bcrypt'),
+jest.mock('bcryptjs', () => ({
+  ...jest.requireActual('bcryptjs'),
   compare: jest.fn()
 }))
 

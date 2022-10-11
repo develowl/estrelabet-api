@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable, NotFoundException } from '@nes
 import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exception'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { compare, hashSync } from 'bcrypt'
+import { compare, hashSync } from 'bcryptjs'
 import { MockAdmin } from '../types/auth'
 import { Jwt, JwtPayload } from '../types/jwt'
 import { SigninDto } from './dto/signin.dto'
