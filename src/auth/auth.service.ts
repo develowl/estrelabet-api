@@ -22,7 +22,7 @@ export class AuthService {
     }
   }
 
-  async getAdmin(identifier: string): Promise<MockAdmin> {
+  private async getAdmin(identifier: string): Promise<MockAdmin> {
     if (this.mockAdmin.identifier !== identifier) {
       throw new BadRequestException('Admin not found')
     }
