@@ -72,7 +72,7 @@ export class AuthService {
     }
   }
 
-  async updateRefreshToken(identifier: string, refreshToken: string) {
+  private async updateRefreshToken(identifier: string, refreshToken: string) {
     const user = await this.getAdmin(identifier)
 
     this.mockAdmin = {
