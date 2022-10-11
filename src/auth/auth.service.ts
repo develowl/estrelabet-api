@@ -81,7 +81,7 @@ export class AuthService {
     }
   }
 
-  async refreshTokens(identifier: string, refreshToken: string): Promise<void> {
+  async refreshTokens(identifier: string, refreshToken: string): Promise<Jwt> {
     const admin = await this.getAdmin(identifier)
     if (!admin.refreshToken) {
       throw new BadRequestException('User not signed in')
@@ -90,5 +90,7 @@ export class AuthService {
     if (admin.refreshToken !== refreshToken) {
       throw new ForbiddenException('Invalid refresh token')
     }
+
+    return await this.getTokens({ identifier })
   }
 }
