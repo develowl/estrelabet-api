@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -43,6 +44,12 @@ describe('AuthService', () => {
   })
 
   describe('signin', () => {
+    it('should throw an exception when is passed a invalid user', async () => {
+      const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
+
+      await expect(authService.signin(mockInvalidAdmin)).rejects.toThrow(BadRequestException)
+    })
+
     it('should signin successfully', async () => {
       const spyGetAdmin = jest.spyOn(authService, 'getAdmin')
       const spyGetTokens = jest.spyOn(AuthService.prototype as any, 'getTokens')
