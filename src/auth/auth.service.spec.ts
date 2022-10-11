@@ -59,7 +59,7 @@ describe('AuthService', () => {
     })
 
     it('should signin successfully', async () => {
-      const spyGetAdmin = jest.spyOn(authService, 'getAdmin')
+      const spyGetAdmin = jest.spyOn(AuthService.prototype as any, 'getAdmin')
       const spyGetTokens = jest.spyOn(AuthService.prototype as any, 'getTokens')
 
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.resolve(true))
