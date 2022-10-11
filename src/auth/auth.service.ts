@@ -54,6 +54,19 @@ export class AuthService {
     return { message: 'Signed out successfully' }
   }
 
+  async refreshTokens(identifier: string, refreshToken: string): Promise<Jwt> {
+    const admin = await this.getAdmin(identifier)
+    if (!admin.refreshToken) {
+      throw new BadRequestException('User not signed in')
+    }
+
+    if (admin.refreshToken !== refreshToken) {
+      throw new ForbiddenException('Invalid refresh token')
+    }
+
+    return await this.getTokens({ identifier })
+  }
+
   private async getTokens({ identifier }: JwtPayload) {
     const access_token = await this.jwtService.signAsync(identifier, {
       expiresIn: '1h',
@@ -79,18 +92,5 @@ export class AuthService {
       ...user,
       refreshToken: refreshToken || undefined
     }
-  }
-
-  async refreshTokens(identifier: string, refreshToken: string): Promise<Jwt> {
-    const admin = await this.getAdmin(identifier)
-    if (!admin.refreshToken) {
-      throw new BadRequestException('User not signed in')
-    }
-
-    if (admin.refreshToken !== refreshToken) {
-      throw new ForbiddenException('Invalid refresh token')
-    }
-
-    return await this.getTokens({ identifier })
   }
 }
