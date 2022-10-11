@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exception'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
@@ -48,7 +48,7 @@ describe('AuthService', () => {
     it('should throws an exception when is passed an invalid user', async () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
 
-      await expect(authService.signin(mockInvalidAdmin)).rejects.toThrow(BadRequestException)
+      await expect(authService.signin(mockInvalidAdmin)).rejects.toThrow(NotFoundException)
     })
 
     it('should throws an exception when is passed an invalid pasword', async () => {
@@ -82,7 +82,7 @@ describe('AuthService', () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
 
       await expect(authService.signout(mockInvalidAdmin.identifier)).rejects.toThrow(
-        BadRequestException
+        NotFoundException
       )
     })
 
@@ -110,7 +110,7 @@ describe('AuthService', () => {
 
       await expect(
         authService.refreshTokens(mockInvalidAdmin.identifier, mockAdmin.refreshToken)
-      ).rejects.toThrow(BadRequestException)
+      ).rejects.toThrow(NotFoundException)
     })
 
     it('should throws an exception when is tried to refresh tokens with a different refreshToken', async () => {
