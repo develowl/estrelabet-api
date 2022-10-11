@@ -10,6 +10,8 @@ services:
       - .:/usr/api
     env_file:
       - .env.example
+    environment:
+      - MYSQL_HOST=db
 
   db:
     image: mysql
@@ -17,3 +19,5 @@ services:
       - '3306:3306'
     env_file:
       - .env.example
+    environment:
+      - MYSQL_HOST=db
