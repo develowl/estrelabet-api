@@ -7,7 +7,7 @@ import { SigninDto } from './dto/signin.dto'
 export class AuthController {
   constructor(@Inject(AuthService) private readonly service: AuthService) {}
 
-  @Post()
+  @Post('signin')
   async signin(@Body() signinDto: SigninDto): Promise<Jwt> {
     return await this.service.signin(signinDto)
   }
