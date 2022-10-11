@@ -38,22 +38,16 @@ describe('UsersService', () => {
     mockRepository = module.get<Repository<User>>(getRepositoryToken(User))
   })
 
-  afterEach(() => jest.clearAllMocks())
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.resetAllMocks()
+  })
 
   it('should be defined', () => {
     expect(usersService).toBeDefined()
   })
 
   describe('get', () => {
-    it('should return a valid user', async () => {
-      const spyGet = jest.spyOn(usersService, 'get')
-      jest.spyOn(mockRepository, 'findOneOrFail').mockResolvedValueOnce(mockUser)
-
-      expect(await usersService.get(mockUser.id)).toBe(mockUser)
-      expect(mockRepository.findOneOrFail).toHaveBeenCalledTimes(1)
-      expect(spyGet).toHaveBeenCalledWith(mockUser.id)
-    })
-
     it('should throws an exception when not found a valid user', async () => {
       jest
         .spyOn(mockRepository, 'findOneOrFail')
@@ -62,6 +56,15 @@ describe('UsersService', () => {
         )
 
       await expect(usersService.get(mockUser.id)).rejects.toThrow(NotFoundException)
+    })
+
+    it('should return a valid user', async () => {
+      const spyGet = jest.spyOn(usersService, 'get')
+      jest.spyOn(mockRepository, 'findOneOrFail').mockResolvedValueOnce(mockUser)
+
+      expect(await usersService.get(mockUser.id)).toBe(mockUser)
+      expect(mockRepository.findOneOrFail).toHaveBeenCalledTimes(1)
+      expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
   })
 
@@ -75,26 +78,20 @@ describe('UsersService', () => {
   })
 
   describe('create/save', () => {
-    it('should return a new user', async () => {
-      const spyCreate = jest.spyOn(usersService, 'create')
-      jest
-        .spyOn(helpers, 'fetchAddress')
-        .mockImplementationOnce(
-          async () =>
-            await new Promise((resolve) => resolve(JSON.stringify(mockCreateUserDto.address)))
-        )
-      jest.spyOn(mockRepository, 'create').mockReturnValueOnce(mockUser)
-      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockUser)
-
-      expect(await usersService.create(mockCreateUserDto)).toStrictEqual(mockUser)
-      expect(mockRepository.create).toHaveBeenCalledTimes(1)
-      expect(mockRepository.save).toHaveBeenCalledTimes(1)
-      expect(spyCreate).toHaveBeenCalledWith(mockCreateUserDto)
-    })
-
     it('should throws an exception when not found a valid company', async () => {
       jest
         .spyOn(companiesService, 'get')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
+
+      await expect(usersService.create(mockCreateUserDto)).rejects.toThrow(NotFoundException)
+    })
+
+    it('should throws an exception when is passed an invalid CEP', async () => {
+      jest.spyOn(companiesService, 'get').mockResolvedValueOnce(mockUser.company)
+      jest
+        .spyOn(helpers, 'fetchAddress')
         .mockImplementationOnce(
           async () => await new Promise((_, reject) => reject(new NotFoundException()))
         )
@@ -111,9 +108,53 @@ describe('UsersService', () => {
 
       await expect(usersService.create(mockCreateUserDto)).rejects.toThrow(BadRequestException)
     })
+
+    it('should return a new user', async () => {
+      const spyCreate = jest.spyOn(usersService, 'create')
+      jest
+        .spyOn(helpers, 'fetchAddress')
+        .mockImplementationOnce(
+          async () =>
+            await new Promise((resolve) => resolve(JSON.stringify(mockCreateUserDto.address)))
+        )
+      jest.spyOn(mockRepository, 'create').mockReturnValueOnce(mockUser)
+      jest.spyOn(mockRepository, 'save').mockResolvedValueOnce(mockUser)
+
+      expect(await usersService.create(mockCreateUserDto)).toStrictEqual(mockUser)
+      expect(mockRepository.create).toHaveBeenCalledTimes(1)
+      expect(mockRepository.save).toHaveBeenCalledTimes(1)
+      expect(spyCreate).toHaveBeenCalledWith(mockCreateUserDto)
+    })
   })
 
   describe('update', () => {
+    it('should throws an exception when not found a valid company', async () => {
+      const spyUpdate = jest.spyOn(usersService, 'update')
+      jest
+        .spyOn(companiesService, 'get')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new NotFoundException()))
+        )
+
+      await expect(
+        usersService.update(mockUser.id, mockUpdateUserDto(false, true))
+      ).rejects.toThrow(NotFoundException)
+      expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
+    })
+
+    it('should throws an exception when updating goes wrong', async () => {
+      jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      jest
+        .spyOn(mockRepository, 'save')
+        .mockImplementationOnce(
+          async () => await new Promise((_, reject) => reject(new BadRequestException()))
+        )
+
+      await expect(usersService.update(mockUser.id, mockUpdateUserDto())).rejects.toThrow(
+        BadRequestException
+      )
+    })
+
     it('should return a user with updated data - without new address nor new idCompany', async () => {
       const mockMergedUser = {
         ...mockUser,
@@ -178,44 +219,9 @@ describe('UsersService', () => {
       expect(mockRepository.save).toHaveBeenCalledTimes(1)
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
     })
-
-    it('should throws an exception when not found a valid company', async () => {
-      const spyUpdate = jest.spyOn(usersService, 'update')
-      jest
-        .spyOn(companiesService, 'get')
-        .mockImplementationOnce(
-          async () => await new Promise((_, reject) => reject(new NotFoundException()))
-        )
-
-      await expect(
-        usersService.update(mockUser.id, mockUpdateUserDto(false, true))
-      ).rejects.toThrow(NotFoundException)
-      expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
-    })
-
-    it('should throws an exception when updating goes wrong', async () => {
-      jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
-      jest
-        .spyOn(mockRepository, 'save')
-        .mockImplementationOnce(
-          async () => await new Promise((_, reject) => reject(new BadRequestException()))
-        )
-
-      await expect(usersService.update(mockUser.id, mockUpdateUserDto())).rejects.toThrow(
-        BadRequestException
-      )
-    })
   })
 
   describe('delete', () => {
-    it('should delete a valid user', async () => {
-      const spyGet = jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
-      jest.spyOn(mockRepository, 'remove').mockResolvedValueOnce(mockUser)
-
-      expect(await usersService.delete(mockUser.id)).toStrictEqual(mockUser)
-      expect(spyGet).toHaveBeenCalledWith(mockUser.id)
-    })
-
     it('should throws an exception when not found a valid user', async () => {
       jest
         .spyOn(usersService, 'get')
@@ -235,6 +241,14 @@ describe('UsersService', () => {
         )
 
       await expect(usersService.delete(mockUser.id)).rejects.toThrow(BadRequestException)
+      expect(spyGet).toHaveBeenCalledWith(mockUser.id)
+    })
+
+    it('should delete a valid user', async () => {
+      const spyGet = jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
+      jest.spyOn(mockRepository, 'remove').mockResolvedValueOnce(mockUser)
+
+      expect(await usersService.delete(mockUser.id)).toStrictEqual(mockUser)
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
   })
