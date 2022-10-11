@@ -103,5 +103,13 @@ describe('AuthService', () => {
         authService.refreshTokens(mockAdmin.identifier, mockAdmin.refreshToken)
       ).rejects.toThrow(BadRequestException)
     })
+
+    it('should throw an exception when is tried to refresh tokens with an invalid user', async () => {
+      const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
+
+      await expect(
+        authService.refreshTokens(mockInvalidAdmin.identifier, mockAdmin.refreshToken)
+      ).rejects.toThrow(BadRequestException)
+    })
   })
 })
