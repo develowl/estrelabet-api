@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
+import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exception'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { compare, hashSync } from 'bcrypt'
@@ -83,7 +84,11 @@ export class AuthService {
   async refreshTokens(identifier: string, refreshToken: string): Promise<void> {
     const admin = await this.getAdmin(identifier)
     if (!admin.refreshToken) {
-      throw new BadRequestException('User not signed id')
+      throw new BadRequestException('User not signed in')
+    }
+
+    if (admin.refreshToken !== refreshToken) {
+      throw new ForbiddenException('Invalid refresh token')
     }
   }
 }
