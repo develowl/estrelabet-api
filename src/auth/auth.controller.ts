@@ -48,7 +48,7 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @SetMetadata('jwt-refresh', true)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Refresh tokens to a authenticated user' })
+  @ApiOperation({ summary: 'Refresh tokens of authenticated user' })
   @ApiCreatedResponse({ description: 'Refreshed tokens' })
   @ApiBadRequestResponse({ description: 'User not signed in' })
   @ApiForbiddenResponse({ description: 'Invalid refresh token' })
