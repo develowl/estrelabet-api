@@ -59,8 +59,8 @@ describe('AuthController', () => {
       const spySignout = jest.spyOn(authController, 'signout')
       jest.spyOn(authService, 'signout').mockResolvedValueOnce(message)
 
-      expect(await authController.signout(mockAdmin)).toStrictEqual(message)
-      expect(spySignout).toHaveBeenCalledWith(mockAdmin)
+      expect(await authController.signout(mockAdmin.identifier)).toStrictEqual(message)
+      expect(spySignout).toHaveBeenCalledWith(mockAdmin.identifier)
     })
   })
 
@@ -69,10 +69,7 @@ describe('AuthController', () => {
       jest.spyOn(authService, 'refreshTokens').mockResolvedValueOnce(mockTokens)
 
       expect(
-        await authController.refreshTokens({
-          identifier: mockAdmin.identifier,
-          refreshToken: mockAdmin.refreshToken
-        })
+        await authController.refreshTokens(mockAdmin.identifier, mockAdmin.refreshToken)
       ).toStrictEqual(mockTokens)
     })
   })
