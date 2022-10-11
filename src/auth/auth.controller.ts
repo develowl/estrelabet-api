@@ -11,4 +11,11 @@ export class AuthController {
   async signin(@Body() signinDto: SigninDto): Promise<Jwt> {
     return await this.service.signin(signinDto)
   }
+
+  @Post('signout')
+  async signout(
+    @Body() { identifier }: Pick<SigninDto, 'identifier'>
+  ): Promise<{ message: string }> {
+    return await this.service.signout(identifier)
+  }
 }
