@@ -76,5 +76,13 @@ describe('AuthService', () => {
         BadRequestException
       )
     })
+
+    it('should throw an exception when is tried to sign out with an invalid user', async () => {
+      const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
+
+      await expect(authService.signout(mockInvalidAdmin.identifier)).rejects.toThrow(
+        BadRequestException
+      )
+    })
   })
 })

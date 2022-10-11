@@ -8,7 +8,7 @@ export const mockConfigService = {
       case 'ADMIN_IDENTIFIER':
         return 'admin'
       case 'ADMIN_PASSWORD':
-        return '1@EstrelaBet'
+        return 'estrelabet'
     }
   }
 }
