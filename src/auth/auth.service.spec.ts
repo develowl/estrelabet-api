@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common'
+import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exception'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -110,6 +111,16 @@ describe('AuthService', () => {
       await expect(
         authService.refreshTokens(mockInvalidAdmin.identifier, mockAdmin.refreshToken)
       ).rejects.toThrow(BadRequestException)
+    })
+
+    it('should throws an exception when is tried to refresh tokens with a different refreshToken', async () => {
+      const mockInvalidAdmin: MockAdmin = { ...mockAdmin, refreshToken: '321' }
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.resolve(true))
+      await authService.signin(mockAdmin)
+
+      await expect(
+        authService.refreshTokens(mockInvalidAdmin.identifier, mockInvalidAdmin.refreshToken)
+      ).rejects.toThrow(ForbiddenException)
     })
   })
 })
