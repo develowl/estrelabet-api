@@ -43,6 +43,16 @@ export class AuthService {
     return await this.getTokens(payload)
   }
 
+  async signout(identifier: string): Promise<{ message: string }> {
+    const admin = await this.getAdmin(identifier)
+    if (!admin.refreshToken) {
+      throw new BadRequestException('User already signed out')
+    }
+
+    await this.updateRefreshToken(identifier, undefined)
+    return { message: 'Signed out successfully' }
+  }
+
   private async getTokens({ identifier }: JwtPayload) {
     const access_token = await this.jwtService.signAsync(identifier, {
       expiresIn: '1h',
