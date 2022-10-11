@@ -6,12 +6,13 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
+  ApiUnauthorizedResponse
 } from '@nestjs/swagger'
+import { CurrentUser } from '../decorators/current-user.decorator'
 import { Public } from '../decorators/public.route.decorator'
 import { Jwt } from '../types/jwt'
 import { AuthService } from './auth.service'
-import { RefreshTokensDto } from './dto/refresh-tokens.dto'
 import { SigninDto } from './dto/signin.dto'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard'
@@ -37,10 +38,9 @@ export class AuthController {
   @ApiOperation({ summary: 'Sign user out' })
   @ApiCreatedResponse({ description: 'User signed out' })
   @ApiBadRequestResponse({ description: 'User not signed in' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async signout(
-    @Body() { identifier }: Pick<SigninDto, 'identifier'>
-  ): Promise<{ message: string }> {
+  async signout(@CurrentUser('identifier') identifier: string): Promise<{ message: string }> {
     return await this.service.signout(identifier)
   }
 
@@ -51,9 +51,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh tokens of authenticated user' })
   @ApiCreatedResponse({ description: 'Refreshed tokens' })
   @ApiBadRequestResponse({ description: 'User not signed in' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Invalid refresh token' })
   @ApiNotFoundResponse({ description: 'User not found' })
-  async refreshTokens(@Body() { identifier, refreshToken }: RefreshTokensDto): Promise<Jwt> {
+  async refreshTokens(
+    @CurrentUser('identifier') identifier: string,
+    @CurrentUser('refreshToken') refreshToken: string
+  ): Promise<Jwt> {
     return await this.service.refreshTokens(identifier, refreshToken)
   }
 }
