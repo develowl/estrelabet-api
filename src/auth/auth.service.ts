@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { ForbiddenException } from '@nestjs/common/exceptions/forbidden.exception'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
@@ -24,7 +24,7 @@ export class AuthService {
 
   private async getAdmin(identifier: string): Promise<MockAdmin> {
     if (this.mockAdmin.identifier !== identifier) {
-      throw new BadRequestException('Admin not found')
+      throw new NotFoundException('Admin not found')
     }
 
     return this.mockAdmin
@@ -68,14 +68,21 @@ export class AuthService {
   }
 
   private async getTokens({ identifier }: JwtPayload) {
-    const access_token = await this.jwtService.signAsync(identifier, {
-      expiresIn: '1h',
-      secret: this.configService.get<string>('JWT_SECRET')
-    })
-    const refresh_token = await this.jwtService.signAsync(identifier, {
-      expiresIn: '2h',
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET')
-    })
+    const access_token = await this.jwtService.signAsync(
+      { identifier },
+      {
+        expiresIn: '1h',
+        secret: this.configService.get<string>('JWT_SECRET')
+      }
+    )
+
+    const refresh_token = await this.jwtService.signAsync(
+      { identifier },
+      {
+        expiresIn: '2h',
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET')
+      }
+    )
 
     await this.updateRefreshToken(identifier, refresh_token)
 
