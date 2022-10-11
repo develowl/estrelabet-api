@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common'
+import { NotFoundException } from '@nestjs/common/exceptions'
 import fetch from 'node-fetch'
 import { AddressDto } from '../common/dtos/address.dto'
 
@@ -25,7 +25,7 @@ export const fetchAddress = async ({ cep, num }: AddressDto) => {
   return await fetch(cepApi)
     .then((data) => data.json())
     .then((data) => {
-      if (data?.erro) throw new BadRequestException('Address not found')
+      if (data?.erro) throw new NotFoundException('Address not found')
 
       const { logradouro, complemento, bairro, localidade, uf, cep } = data
 
