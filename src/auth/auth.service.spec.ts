@@ -1,4 +1,6 @@
+import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
+import { mockConfigService } from '../utils/mock/configService'
 import { AuthService } from './auth.service'
 
 describe('AuthService', () => {
@@ -6,7 +8,13 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService]
+      providers: [
+        AuthService,
+        {
+          provide: ConfigService,
+          useValue: mockConfigService
+        }
+      ]
     }).compile()
 
     authService = module.get<AuthService>(AuthService)
