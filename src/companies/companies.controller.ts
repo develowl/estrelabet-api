@@ -7,7 +7,7 @@ import {
   ApiOperation,
   ApiParam
 } from '@nestjs/swagger'
-import { ApiTags } from '@nestjs/swagger/dist'
+import { ApiBearerAuth, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger/dist'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { mockCompany } from '../utils/mock/company'
 import { CompaniesService } from './companies.service'
@@ -15,13 +15,15 @@ import { CreateCompanyDto } from './dto/create-company.dto'
 import { UpdateCompanyDto } from './dto/update-company.dto'
 import { Company } from './entities/company.entity'
 
-@ApiTags('Companies Operations')
-@UseGuards(JwtAuthGuard)
 @Controller('companies')
+@UseGuards(JwtAuthGuard)
+@ApiTags('Companies Operations')
+@ApiUnauthorizedResponse({ description: 'Unauthorized' })
 export class CompaniesController {
   constructor(@Inject(CompaniesService) private readonly service: CompaniesService) {}
 
   @Get(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a valid Company' })
   @ApiOkResponse({ description: 'Company found', schema: { example: mockCompany } })
   @ApiNotFoundResponse({ description: 'Company not found' })
@@ -31,6 +33,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a list of valid Companies' })
   @ApiOkResponse({ description: 'Array list of Companies', schema: { example: [mockCompany] } })
   async find(): Promise<Company[]> {
@@ -38,6 +41,7 @@ export class CompaniesController {
   }
 
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new Company' })
   @ApiCreatedResponse({ description: 'Created new Company', schema: { example: mockCompany } })
   @ApiBadRequestResponse({ description: 'Unable to create' })
@@ -46,6 +50,7 @@ export class CompaniesController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update an existing Company' })
   @ApiParam({ name: 'id', description: 'Company id that is stored in the database', example: 1 })
   @ApiOkResponse({
@@ -61,6 +66,7 @@ export class CompaniesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete an existing Company' })
   @ApiParam({ name: 'id', description: 'Company id that is stored in the database', example: 1 })
   @ApiOkResponse({ description: 'Deleted Company', schema: { example: mockCompany } })

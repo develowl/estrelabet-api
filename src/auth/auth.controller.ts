@@ -5,6 +5,7 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiOperation,
   ApiTags
 } from '@nestjs/swagger'
 import { Public } from '../decorators/public.route.decorator'
@@ -22,6 +23,7 @@ export class AuthController {
 
   @Post('signin')
   @Public()
+  @ApiOperation({ summary: 'Sign user in' })
   @ApiCreatedResponse({ description: 'User signed in' })
   @ApiBadRequestResponse({ description: 'Incorrect password' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -32,6 +34,7 @@ export class AuthController {
   @Post('signout')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Sign user out' })
   @ApiCreatedResponse({ description: 'User signed out' })
   @ApiBadRequestResponse({ description: 'User not signed in' })
   @ApiNotFoundResponse({ description: 'User not found' })
@@ -45,6 +48,7 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @SetMetadata('jwt-refresh', true)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Refresh tokens to a authenticated user' })
   @ApiCreatedResponse({ description: 'Refreshed tokens' })
   @ApiBadRequestResponse({ description: 'User not signed in' })
   @ApiForbiddenResponse({ description: 'Invalid refresh token' })
