@@ -58,8 +58,8 @@ describe('AuthController', () => {
       const spySignout = jest.spyOn(authController, 'signout')
       jest.spyOn(authService, 'signout').mockResolvedValueOnce(message)
 
-      expect(await authController.signout(mockAdmin)).toStrictEqual(message)
-      expect(spySignout).toHaveBeenCalledWith(mockAdmin)
+      expect(await authController.signout(mockAdmin.identifier)).toStrictEqual(message)
+      expect(spySignout).toHaveBeenCalledWith(mockAdmin.identifier)
     })
   })
 
