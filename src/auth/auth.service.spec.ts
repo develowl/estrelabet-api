@@ -44,13 +44,13 @@ describe('AuthService', () => {
   })
 
   describe('signin', () => {
-    it('should throw an exception when is passed an invalid user', async () => {
+    it('should throws an exception when is passed an invalid user', async () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
 
       await expect(authService.signin(mockInvalidAdmin)).rejects.toThrow(BadRequestException)
     })
 
-    it('should throw an exception when is passed an invalid pasword', async () => {
+    it('should throws an exception when is passed an invalid pasword', async () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, password: 'invalid' }
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.resolve(false))
 
@@ -70,14 +70,14 @@ describe('AuthService', () => {
   })
 
   describe('signout', () => {
-    it('should throw an exception when is tried to sign out without signin previously', async () => {
+    it('should throws an exception when is tried to sign out without signin previously', async () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, refreshToken: undefined }
       await expect(authService.signout(mockInvalidAdmin.identifier)).rejects.toThrow(
         BadRequestException
       )
     })
 
-    it('should throw an exception when is tried to sign out with an invalid user', async () => {
+    it('should throws an exception when is tried to sign out with an invalid user', async () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
 
       await expect(authService.signout(mockInvalidAdmin.identifier)).rejects.toThrow(
@@ -98,13 +98,13 @@ describe('AuthService', () => {
   })
 
   describe('refreshTokens', () => {
-    it('should throw an exception when is tried to refresh tokens without signin previously', async () => {
+    it('should throws an exception when is tried to refresh tokens without signin previously', async () => {
       await expect(
         authService.refreshTokens(mockAdmin.identifier, mockAdmin.refreshToken)
       ).rejects.toThrow(BadRequestException)
     })
 
-    it('should throw an exception when is tried to refresh tokens with an invalid user', async () => {
+    it('should throws an exception when is tried to refresh tokens with an invalid user', async () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
 
       await expect(

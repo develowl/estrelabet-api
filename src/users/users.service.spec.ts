@@ -1,9 +1,9 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
-import * as helpers from '../helpers'
 import { Repository } from 'typeorm'
 import { CompaniesService } from '../companies/companies.service'
+import * as helpers from '../helpers'
 import { mockCompany } from '../utils/mock/company'
 import { mockCreateUserDto, mockUpdateUserDto, mockUser } from '../utils/mock/users'
 import { User } from './entities/user.entity'
@@ -54,7 +54,7 @@ describe('UsersService', () => {
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
 
-    it('should throws an exception when not found a valid user', async () => {
+    it('should throwss an exception when not found a valid user', async () => {
       jest
         .spyOn(mockRepository, 'findOneOrFail')
         .mockImplementationOnce(
@@ -92,7 +92,7 @@ describe('UsersService', () => {
       expect(spyCreate).toHaveBeenCalledWith(mockCreateUserDto)
     })
 
-    it('should throw an exception when not found a valid company', async () => {
+    it('should throws an exception when not found a valid company', async () => {
       jest
         .spyOn(companiesService, 'get')
         .mockImplementationOnce(
@@ -102,7 +102,7 @@ describe('UsersService', () => {
       await expect(usersService.create(mockCreateUserDto)).rejects.toThrow(NotFoundException)
     })
 
-    it('should throw an exception when creation goes wrong', async () => {
+    it('should throws an exception when creation goes wrong', async () => {
       jest
         .spyOn(mockRepository, 'save')
         .mockImplementationOnce(
@@ -179,7 +179,7 @@ describe('UsersService', () => {
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
     })
 
-    it('should throw an exception when not found a valid company', async () => {
+    it('should throws an exception when not found a valid company', async () => {
       const spyUpdate = jest.spyOn(usersService, 'update')
       jest
         .spyOn(companiesService, 'get')
@@ -193,7 +193,7 @@ describe('UsersService', () => {
       expect(spyUpdate).toHaveBeenCalledWith(mockUser.id, mockUpdateUserDto(false, true))
     })
 
-    it('should throws an exception when updating goes wrong', async () => {
+    it('should throwss an exception when updating goes wrong', async () => {
       jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
       jest
         .spyOn(mockRepository, 'save')
@@ -216,7 +216,7 @@ describe('UsersService', () => {
       expect(spyGet).toHaveBeenCalledWith(mockUser.id)
     })
 
-    it('should throw an exception when not found a valid user', async () => {
+    it('should throws an exception when not found a valid user', async () => {
       jest
         .spyOn(usersService, 'get')
         .mockImplementationOnce(
@@ -226,7 +226,7 @@ describe('UsersService', () => {
       await expect(usersService.delete(mockUser.id)).rejects.toThrow(NotFoundException)
     })
 
-    it('should throw an exception when deleting goes wrong', async () => {
+    it('should throws an exception when deleting goes wrong', async () => {
       const spyGet = jest.spyOn(usersService, 'get').mockResolvedValueOnce(mockUser)
       jest
         .spyOn(mockRepository, 'remove')
