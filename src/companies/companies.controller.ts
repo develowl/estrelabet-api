@@ -45,6 +45,7 @@ export class CompaniesController {
   @ApiOperation({ summary: 'Create a new Company' })
   @ApiCreatedResponse({ description: 'Created new Company', schema: { example: mockCompany } })
   @ApiBadRequestResponse({ description: 'Unable to create' })
+  @ApiNotFoundResponse({ description: 'Address not found' })
   async create(@Body() createCompanyDto: CreateCompanyDto): Promise<Company> {
     return await this.service.create(createCompanyDto)
   }
@@ -57,6 +58,7 @@ export class CompaniesController {
     description: 'Updated existing Company',
     schema: { example: { ...mockCompany, name: 'UPDATED COMPANY S.A.' } }
   })
+  @ApiNotFoundResponse({ description: 'Address not found' })
   @ApiBadRequestResponse({ description: 'Unable to update' })
   async update(
     @Param('id') id: number,
