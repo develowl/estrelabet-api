@@ -62,4 +62,17 @@ describe('AuthController', () => {
       expect(spySignout).toHaveBeenCalledWith(mockAdmin)
     })
   })
+
+  describe('refreshTokens', () => {
+    it('should refresh tokens successfully', async () => {
+      jest.spyOn(authService, 'refreshTokens').mockResolvedValueOnce(mockTokens)
+
+      expect(
+        await authController.refreshTokens({
+          identifier: mockAdmin.identifier,
+          refreshToken: mockAdmin.refreshToken
+        })
+      ).toStrictEqual(mockTokens)
+    })
+  })
 })
