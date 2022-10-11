@@ -16,7 +16,7 @@ jest.mock('bcrypt', () => ({
 
 describe('AuthService', () => {
   let authService: AuthService
-  const mockAdmin: MockAdmin = { identifier: 'admin', password: '1@EstrelaBet' }
+  const mockAdmin: MockAdmin = { identifier: 'admin', password: 'estrelabet', refreshToken: '123' }
   const mockTokens: Jwt = { access_token: 'abc', refresh_token: '123' }
 
   beforeEach(async () => {
@@ -44,8 +44,15 @@ describe('AuthService', () => {
   })
 
   describe('signin', () => {
-    it('should throw an exception when is passed a invalid user', async () => {
+    it('should throw an exception when is passed an invalid user', async () => {
       const mockInvalidAdmin: MockAdmin = { ...mockAdmin, identifier: 'invalid' }
+
+      await expect(authService.signin(mockInvalidAdmin)).rejects.toThrow(BadRequestException)
+    })
+
+    it('should throw an exception when is passed an invalid pasword', async () => {
+      const mockInvalidAdmin: MockAdmin = { ...mockAdmin, password: 'invalid' }
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.resolve(false))
 
       await expect(authService.signin(mockInvalidAdmin)).rejects.toThrow(BadRequestException)
     })
@@ -59,6 +66,15 @@ describe('AuthService', () => {
       expect(await authService.signin(mockAdmin)).toStrictEqual(mockTokens)
       expect(spyGetAdmin).toHaveBeenCalledWith(mockAdmin.identifier)
       expect(spyGetTokens).toHaveBeenCalledWith({ identifier: mockAdmin.identifier })
+    })
+  })
+
+  describe('signout', () => {
+    it('should throw an exception when is tried to sign out without signin previously', async () => {
+      const mockInvalidAdmin: MockAdmin = { ...mockAdmin, refreshToken: undefined }
+      await expect(authService.signout(mockInvalidAdmin.identifier)).rejects.toThrow(
+        BadRequestException
+      )
     })
   })
 })
