@@ -45,7 +45,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Create a new User' })
   @ApiCreatedResponse({ description: 'Created new User', schema: { example: mockUser } })
   @ApiBadRequestResponse({ description: 'Unable to create' })
-  @ApiNotFoundResponse({ description: 'Company not found' })
+  @ApiNotFoundResponse({ description: 'Company OR address not found' })
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return await this.service.create(createUserDto)
   }
@@ -59,7 +59,7 @@ export class UsersController {
     schema: { example: { ...mockUser, name: 'UPDATED USER' } }
   })
   @ApiBadRequestResponse({ description: 'Unable to update' })
-  @ApiNotFoundResponse({ description: 'User OR Company not found' })
+  @ApiNotFoundResponse({ description: 'User OR Company OR address not found' })
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return await this.service.update(id, updateUserDto)
   }
