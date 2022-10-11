@@ -84,5 +84,16 @@ describe('AuthService', () => {
         BadRequestException
       )
     })
+
+    it('should sign out successfully', async () => {
+      const spySignout = jest.spyOn(authService, 'signout')
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(async () => Promise.resolve(true))
+      await authService.signin(mockAdmin)
+
+      expect(await authService.signout(mockAdmin.identifier)).toStrictEqual({
+        message: 'Signed out successfully'
+      })
+      expect(spySignout).toHaveBeenCalledWith(mockAdmin.identifier)
+    })
   })
 })
